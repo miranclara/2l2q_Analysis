@@ -20,6 +20,17 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 
+
+// AT Additional libraries for GenJet variables
+#include <DataFormats/PatCandidates/interface/Jet.h>
+#include <CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h>
+#include <CondFormats/JetMETObjects/interface/JetCorrectorParameters.h>
+#include <JetMETCorrections/Objects/interface/JetCorrectionsRecord.h>
+#include <JetMETCorrections/Modules/interface/JetResolution.h>
+#include "DataFormats/JetReco/interface/GenJet.h"
+#include "PhysicsTools/JetMCUtils/interface/JetMCTag.h"
+#include "PhysicsTools/JetMCUtils/interface/CandMCTag.h"
+
 using namespace std;
 using namespace reco;
 using namespace edm;
@@ -29,14 +40,15 @@ namespace {
 }
 
 
-MCHistoryTools::MCHistoryTools(const edm::Event & event, std::string sampleName, edm::Handle<edm::View<reco::Candidate> > & genParticles, edm::Handle<GenEventInfoProduct> & gen) :
+MCHistoryTools::MCHistoryTools(const edm::Event & event, std::string sampleName, edm::Handle<edm::View<reco::Candidate> > & genParticles, edm::Handle<GenEventInfoProduct> & gen , edm::Handle<edm::View<reco::GenJet> > & genJets, bool fourLep) :
   ismc(false),
   processID(0),
   hepMCweight(1),
   isInit(false),
   theGenH(0) 
 {
-
+  jets=genJets;
+  is4L = fourLep;
   particles = genParticles;
   if(particles.isValid()){
 
@@ -91,6 +103,7 @@ MCHistoryTools::MCHistoryTools(const edm::Event & event, std::string sampleName,
     // for TTZ (without jets sample)
     if (boost::starts_with(sampleName,"TTZ")) processID=900104;
     if (boost::starts_with(sampleName,"TTTo2L2Nu")) processID=900104;
+    if (boost::starts_with(sampleName,"TTJetsDiLep")) processID=900104;
     // for WWZ
     if (boost::starts_with(sampleName,"WWZ")) processID=900105;
     // for tHW
@@ -199,9 +212,10 @@ MCHistoryTools::init() {
 
   for( View<Candidate>::const_iterator p = particles->begin(); p != particles->end(); ++ p ) {
     int id = abs(p->pdgId());
+     bool isHZZ = (id==25 || id==39);
 
      //--- H
-    if (id==25) {
+    if (isHZZ) {
       if (theGenH==0) theGenH = &*p; // Consider only the first one in the chain
     }
 
@@ -228,6 +242,34 @@ MCHistoryTools::init() {
 	theAssociatedLeps.push_back(&*p);
       }
     }
+
+/*
+ else if (id<6 && !is4L &&  (p->mother()!=0)) {
+      int mid = abs(p->mother()->pdgId());
+      int pid = abs(getParentCode((const GenParticle*)&*p));
+      if ((mid==23&& (pid==23 || pid==25 || pid==39)) // Leptons from Z, not from H->Z; note that this is the first daughter in the Z line; ie pre-FSR.
+                                       // qqZZ and ggZZ will fall here so they have to be handled later.
+                 || (mid==24)) {     // from W->lnu (for WH, ttH)
+          theGenJets.push_back(&*p);
+      }
+    }
+*/
+
+for(View<reco::GenJet>::const_iterator genjet = jets->begin(); genjet != jets->end(); genjet++){
+    theGenJets.push_back(&* genjet);
+  //  std::vector<bool> dR_clean;
+  //  for(unsigned i = 0; i < theSortedGenLepts.size(); ++i){
+  //    float dR = deltaR(*theSortedGenLepts[i], *genjet);
+  //    if(dR<0.4) dR_clean.push_back(false);
+  //    else dR_clean.push_back(true);
+  //  }
+  //  if (!(std::find(dR_clean.begin(), dR_clean.end(), false)!=dR_clean.end())){
+  //    theCleanedGenJets.push_back(&* genjet);
+  //  }
+  } //ATjets
+
+
+
 
     //FSR
     if (id==22) {
@@ -289,11 +331,11 @@ MCHistoryTools::init() {
   }
   
 
+    float iZ11=-1, iZ12=-1, iZ21=-1, iZ22=-1;
   // Sort leptons, as done for the signal, for cases where we have 4.
   if (theGenLeps.size()==4) {
     const float ZmassValue = 91.1876;  
     float minDZMass=1E36;
-    float iZ11=-1, iZ12=-1, iZ21=-1, iZ22=-1;
     
     // Find Z1 as closest-to-mZ l+l- combination
     for (int i=0; i<4; ++i) {
@@ -343,6 +385,23 @@ MCHistoryTools::init() {
     if(iZ21>=0) theSortedGenLepts.push_back(theGenLeps[iZ21]);
     if(iZ22>=0) theSortedGenLepts.push_back(theGenLeps[iZ22]);
 
+   } else if (!is4L && theGenLeps.size()==2 && theGenJets.size()==2) {
+
+    iZ11 = 0;
+    iZ12 = 1;
+    iZ21 = 0;
+    iZ22 = 1;
+    // Sort leptons by sign
+   if (theGenLeps[iZ21]->pdgId() < 0 ) {
+      swap(iZ21,iZ22);
+    }
+
+    theSortedGenLepts.push_back(theGenJets[iZ11]);
+    theSortedGenLepts.push_back(theGenJets[iZ12]);
+    theSortedGenLepts.push_back(theGenLeps[iZ21]);
+    theSortedGenLepts.push_back(theGenLeps[iZ22]);
+
+
 //     cout << " Gen Lepton sorting: " << sampleName << " " 
 // 	 << (theSortedGenLepts[0]->p4()+theSortedGenLepts[1]->p4()).mass() << " " 
 // 	 << (theSortedGenLepts[2]->p4()+theSortedGenLepts[3]->p4()).mass() << " | "
@@ -353,10 +412,12 @@ MCHistoryTools::init() {
 // 	 << theSortedGenLepts[2]->pdgId() << " " 
 // 	 << theSortedGenLepts[3]->pdgId() << " " 
 // 	 << endl;
+
   } else {
     theSortedGenLepts = theGenLeps;
   }
   
+
 
   isInit = true;
 
@@ -407,6 +468,42 @@ MCHistoryTools::genAcceptance(bool& gen_ZZ4lInEtaAcceptance, bool& gen_ZZ4lInEta
   }
 }
 
+/////////////////////////////////////////////////
+
+
+void
+MCHistoryTools::genAcceptance_2l2q(bool& gen_ZZ2l2qInEtaAcceptance, bool& gen_ZZ2l2qInEtaPtAcceptance){
+  if (!ismc) return;
+  init();
+
+  gen_ZZ2l2qInEtaAcceptance = false;
+  gen_ZZ2l2qInEtaPtAcceptance = false;
+//if (theGenLeps.size()==2 && theGenJets.size()==2) {
+if (theGenLeps.size()==2 /*&& theGenJets.size()==2*/) {
+ int nlInEtaAcceptance_2l2q = 0;
+    int nlInEtaPtAcceptance_2l2q = 0;
+ for (unsigned int i=0; i<theGenLeps.size(); ++i){
+      float abseta =  fabs(theGenLeps[i]->eta());
+      int id = abs(theGenLeps[i]->pdgId());
+      if ((id == 11 && theGenLeps[i]->pt() > 7. && abseta < 2.5) ||
+          (id == 13 && theGenLeps[i]->pt() > 5. && abseta < 2.4)) {
+        ++nlInEtaPtAcceptance_2l2q;
+      }
+      if ((id == 11 && abseta < 2.5) ||
+          (id == 13 && abseta < 2.4)) {
+        ++nlInEtaAcceptance_2l2q;
+      }
+    }
+    if (nlInEtaPtAcceptance_2l2q==2) gen_ZZ2l2qInEtaPtAcceptance = true;
+    if (nlInEtaAcceptance_2l2q==2) gen_ZZ2l2qInEtaAcceptance = true;
+  }
+}
+
+
+
+
+/////////////
+
 
 int
 MCHistoryTools::genFinalState(){
@@ -415,11 +512,12 @@ MCHistoryTools::genFinalState(){
 
   int gen_finalState = NONE;  
   int ifs=1;
+  int ifs_v2=1;
+   // cout<<"number of gen Leps = "<<theGenLeps.size()<<"   the number of gen jets = "<<theGenJets.size()<<endl;
   if (theGenLeps.size()==4){
     for (int i=0; i<4; ++i) {
       ifs*=theGenLeps[i]->pdgId();
     }
-
     // FIXME this does not make much sense now that we re-pair Zs in the MC history.
     if (ifs==14641) {
       gen_finalState = EEEE;
@@ -449,6 +547,22 @@ MCHistoryTools::genFinalState(){
       return NONE;
     }
   }
+ 
+ if (theGenLeps.size()==2 ){
+    for (int i=0; i<2; ++i) {
+      ifs_v2*=theGenLeps[i]->pdgId();
+    } 
+    //cout<<" pdgID multiplication of two lep ="<<ifs_v2<<endl;
+  if(abs(ifs_v2)==121){
+    gen_finalState = EEQQ;
+   } else if(abs(ifs_v2)==169){
+   gen_finalState = MMQQ;
+   }else if(abs(ifs_v2)==225){
+   gen_finalState = TTQQ;
+   }
+   }
+
+
   return gen_finalState;
 }
 

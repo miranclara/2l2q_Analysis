@@ -204,14 +204,16 @@ ZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
       }
       
-      if (myCand.numberOfDaughters()>2) {
+//      if (myCand.numberOfDaughters()>2) {//for 4l
+      if (myCand.numberOfDaughters()>4) { //for 2l
         myCand.addUserFloat("mll",mll);
       }
 
     } else if (FSRMode==0) { // no FSR
       myCand.addUserFloat("dauWithFSR",-1);
-      myCand.addUserFloat("d0.combRelIsoPFFSRCorr",myCand.userFloat("d0.combRelIsoPF"));
-      myCand.addUserFloat("d1.combRelIsoPFFSRCorr",myCand.userFloat("d1.combRelIsoPF"));
+      //FIXME alke
+      //myCand.addUserFloat("d0.combRelIsoPFFSRCorr",myCand.userFloat("d0.combRelIsoPF"));//changed
+      //myCand.addUserFloat("d1.combRelIsoPFFSRCorr",myCand.userFloat("d1.combRelIsoPF"));//changed
     }
 
     

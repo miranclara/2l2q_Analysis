@@ -1,0 +1,73 @@
+identifier,process,crossSection=-1,BR=1,execute=True,dataset,prefix,pattern,splitLevel,::variables,::pyFragments,comment
+
+### See comment field,,,,,,,,,,,Unless otherwise stated; signal x-sections are taken from https://hypernews.cern.ch/HyperNews/CMS/get/higgs/1738.html
+###,,,,,,,,,,,in the [120;130] range they are taken from the YR4 SM 13TeV tab; i.e. they are N3LO QCD + NLO EW
+###,,,,,,,,,,,while for other mass points they are taken from the YR4 BSM 13TeV tab; i.e. they are in NWA and without EWK corrections; see https://hypernews.cern.ch/HyperNews/CMS/get/higgs/1738/1/1/1.html
+###,,,,,,,,,,,For ZH and ttH the BR is obtained as BR(H->ZZ->2L2X) = BR(H->4L) + BR(H->2L2q) + BR(H->ZZ*->2L2nu) * BR(H->2L2nu) / [ BR(H->ZZ*->2L2nu) + BR(H->WW*->2L2nu) ] where BR(H->4L) BR(H->2L2q) and BR(H->2L2nu) are taken from the YR3 Twikis.
+###,,,,,,,,,,,For ZH and ttH the BR column also includes the gen filter efficiency (0.15038 for ZH and 0.1544 for ttH).
+
+###,,,,,,,,,,,xsec (in pb) taken from https://twiki.cern.ch/twiki/bin/view/LHCPhysics/CERNYellowReportPageBSMAt13TeV
+###,,,,,,,,,,,BR(ZZ -> 2l2q) = 2 x 9.9% x 70% = 13.86%
+###,,,,,,,,,,,BR(H->2l2q mH=125) = 3.668E-03 taken from here: https://twiki.cern.ch/twiki/bin/view/LHCPhysics/CERNYellowReportPageBR
+
+
+#ggH125,,45.20,3.668E-03,,/GluGluHToZZTo2L2Q_M125_13TeV_powheg2_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,2,GENXSEC=30.0188;GENBR=1.;ADDLHEKINEMATICS=True;VVMODE=1;VVDECAYMODE=0;APPLY_K_NNLOQCD_ZZGG=2;APPLY_QCD_GGF_UNCERT=True;LEPTON_SETUP=2018,RecoProbabilities.py;LHEProbabilities_GG_SIG_0PM_H125_POWHEG.py,
+
+#ggH750,,0.4969,3.668E-03,,/GluGluHToZZTo2L2Q_M750_13TeV_powheg2_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,2,GENXSEC=0.445;GENBR=1.;ADDLHEKINEMATICS=True;VVMODE=1;VVDECAYMODE=0;APPLY_K_NNLOQCD_ZZGG=2;APPLY_QCD_GGF_UNCERT=True;LEPTON_SETUP=2018,RecoProbabilities.py;LHEProbabilities_GG_SIG_0PM_H750_POWHEG.py,
+
+#VBFH750,,0.1915,3.668E-03,,/VBF_HToZZTo2L2Q_M750_13TeV_powheg2_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,2,GENXSEC=0.2351;GENBR=1.;ADDLHEKINEMATICS=True;VVMODE=1;VVDECAYMODE=0;APPLY_K_NNLOQCD_ZZGG=2;APPLY_QCD_GGF_UNCERT=True;LEPTON_SETUP=2018,RecoProbabilities.py;LHEProbabilities_VBF_SIG_0PM_H750_POWHEG.py,
+
+
+#ggH800,,4.015E-01,3.668E-03,,/GluGluHToZZTo2L2Q_M800_13TeV_powheg2_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,2,GENXSEC=0.3197;GENBR=1.;ADDLHEKINEMATICS=True;VVMODE=1;VVDECAYMODE=0;APPLY_K_NNLOQCD_ZZGG=2;APPLY_QCD_GGF_UNCERT=True;LEPTON_SETUP=2018,RecoProbabilities.py;LHEProbabilities_GG_SIG_0PM_H800_POWHEG.py,
+
+#VBFH800,,1.622E-01,3.668E-03,,/VBF_HToZZTo2L2Q_M800_13TeV_powheg2_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,2,GENXSEC=0.2051;GENBR=1.;ADDLHEKINEMATICS=True;VVMODE=1;VVDECAYMODE=0;APPLY_K_NNLOQCD_ZZGG=2;APPLY_QCD_GGF_UNCERT=True;LEPTON_SETUP=2018,RecoProbabilities.py;LHEProbabilities_VBF_SIG_0PM_H800_POWHEG.py,
+
+#ggH900,,2.685E-01,3.668E-03,,/GluGluHToZZTo2L2Q_M900_13TeV_powheg2_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,2,GENXSEC=0.1749;GENBR=1.;ADDLHEKINEMATICS=True;VVMODE=1;VVDECAYMODE=0;APPLY_K_NNLOQCD_ZZGG=2;APPLY_QCD_GGF_UNCERT=True;LEPTON_SETUP=2018,RecoProbabilities.py;LHEProbabilities_GG_SIG_0PM_H900_POWHEG.py,
+
+#VBFH900,,1.18E-01,3.668E-03,,/VBF_HToZZTo2L2Q_M900_13TeV_powheg2_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,2,GENXSEC=0.1581;GENBR=1.;ADDLHEKINEMATICS=True;VVMODE=1;VVDECAYMODE=0;APPLY_K_NNLOQCD_ZZGG=2;APPLY_QCD_GGF_UNCERT=True;LEPTON_SETUP=2018,RecoProbabilities.py;LHEProbabilities_VBF_SIG_0PM_H900_POWHEG.py,
+
+ggH1000,,1.845E-01,3.668E-03,,/GluGluHToZZTo2L2Q_M1000_13TeV_powheg2_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,2,GENXSEC=0.1023;GENBR=1.;ADDLHEKINEMATICS=True;VVMODE=1;VVDECAYMODE=0;APPLY_K_NNLOQCD_ZZGG=2;APPLY_QCD_GGF_UNCERT=True;LEPTON_SETUP=2018,RecoProbabilities.py;LHEProbabilities_GG_SIG_0PM_H1000_POWHEG.py,
+
+VBFH1000,,8.732E-02,3.668E-03,,/VBF_HToZZTo2L2Q_M1000_13TeV_powheg2_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM,dbs,,2,GENXSEC=0.1252;GENBR=1.;ADDLHEKINEMATICS=True;VVMODE=1;VVDECAYMODE=0;APPLY_K_NNLOQCD_ZZGG=2;APPLY_QCD_GGF_UNCERT=True;LEPTON_SETUP=2018,RecoProbabilities.py;LHEProbabilities_VBF_SIG_0PM_H1000_POWHEG.py,
+
+#ggH1500,,3.690E-02,3.668E-03,,/GluGluHToZZTo2L2Q_M1500_13TeV_powheg2_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,2,GENXSEC=0.01308;GENBR=1.;ADDLHEKINEMATICS=True;VVMODE=1;VVDECAYMODE=0;APPLY_K_NNLOQCD_ZZGG=2;APPLY_QCD_GGF_UNCERT=True;LEPTON_SETUP=2018,RecoProbabilities.py;LHEProbabilities_GG_SIG_0PM_H1500_POWHEG.py,
+
+#VBFH1500,,2.288E-02,3.668E-03,,/VBF_HToZZTo2L2Q_M1500_13TeV_powheg2_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v3/MINIAODSIM,dbs,,2,GENXSEC=0.04437;GENBR=1.;ADDLHEKINEMATICS=True;VVMODE=1;VVDECAYMODE=0;APPLY_K_NNLOQCD_ZZGG=2;APPLY_QCD_GGF_UNCERT=True;LEPTON_SETUP=2018,RecoProbabilities.py;LHEProbabilities_VBF_SIG_0PM_H1500_POWHEG.py,
+
+
+#ggH2000,,9.600E-03,3.668E-03,,/GluGluHToZZTo2L2Q_M2000_13TeV_powheg2_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,2,GENXSEC=0.0055;GENBR=1.;ADDLHEKINEMATICS=True;VVMODE=1;VVDECAYMODE=0;APPLY_K_NNLOQCD_ZZGG=2;APPLY_QCD_GGF_UNCERT=True;LEPTON_SETUP=2018,RecoProbabilities.py;LHEProbabilities_GG_SIG_0PM_H2000_POWHEG.py,
+
+#VBFH2000,,7.052E-03,3.668E-03,,/VBF_HToZZTo2L2Q_M2000_13TeV_powheg2_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM,dbs,,2,GENXSEC=0.03435;GENBR=1.;ADDLHEKINEMATICS=True;VVMODE=1;VVDECAYMODE=0;APPLY_K_NNLOQCD_ZZGG=2;APPLY_QCD_GGF_UNCERT=True;LEPTON_SETUP=2018,RecoProbabilities.py;LHEProbabilities_VBF_SIG_0PM_H2000_POWHEG.py,
+
+
+#ggH2500,,2.890E-03,3.668E-03,,/GluGluHToZZTo2L2Q_M2500_13TeV_powheg2_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,2,GENXSEC=0.002207;GENBR=1.;ADDLHEKINEMATICS=True;VVMODE=1;VVDECAYMODE=0;APPLY_K_NNLOQCD_ZZGG=2;APPLY_QCD_GGF_UNCERT=True;LEPTON_SETUP=2018,RecoProbabilities.py;LHEProbabilities_GG_SIG_0PM_H2500_POWHEG.py,
+
+#VBFH2500,,2.360E-03,3.668E-03,,/VBF_HToZZTo2L2Q_M2500_13TeV_powheg2_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM,dbs,,2,GENXSEC=0.02112;GENBR=1.;ADDLHEKINEMATICS=True;VVMODE=1;VVDECAYMODE=0;APPLY_K_NNLOQCD_ZZGG=2;APPLY_QCD_GGF_UNCERT=True;LEPTON_SETUP=2018,RecoProbabilities.py;LHEProbabilities_VBF_SIG_0PM_H2500_POWHEG.py,
+
+
+#ggH3000,,9.400E-04,3.668E-03,,/GluGluHToZZTo2L2Q_M3000_13TeV_powheg2_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,2,GENXSEC=0.001037;GENBR=1.;ADDLHEKINEMATICS=True;VVMODE=1;VVDECAYMODE=0;APPLY_K_NNLOQCD_ZZGG=2;APPLY_QCD_GGF_UNCERT=True;LEPTON_SETUP=2018,RecoProbabilities.py;LHEProbabilities_GG_SIG_0PM_H3000_POWHEG.py,
+
+#VBFH3000,,8.253E-04,3.668E-03,,/VBF_HToZZTo2L2Q_M3000_13TeV_powheg2_JHUGenV7011_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,2,GENXSEC=0.01364;GENBR=1.;ADDLHEKINEMATICS=True;VVMODE=1;VVDECAYMODE=0;APPLY_K_NNLOQCD_ZZGG=2;APPLY_QCD_GGF_UNCERT=True;LEPTON_SETUP=2018,RecoProbabilities.py;LHEProbabilities_VBF_SIG_0PM_H3000_POWHEG.py,
+
+#Next Next Leading order Inclusive samples
+#DYJetsToLL,,6225.4,,,/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,4,GENXSEC=5877.16;GENBR=1;LEPTON_SETUP=2018;ADDZTREE=False,RecoProbabilities.py,
+
+#leading order Inclusive sample
+#DYJetsToLL_M50_LO,,6077.22,,,/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,4,GENXSEC=6077.22;GENBR=1;LEPTON_SETUP=2018;ADDZTREE=False,RecoProbabilities.py,
+
+#Leading order exclusive sampels
+#DY1JetsToLL,,1016.0,,,/DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM,dbs,,4,GENXSEC=876.9;GENBR=1;LEPTON_SETUP=2018;ADDZTREE=False,RecoProbabilities.py,
+#DY2JetsToLL,,331.4,,,/DY2JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM,dbs,,4,GENXSEC=306.4;GENBR=1;LEPTON_SETUP=2018;ADDZTREE=False,RecoProbabilities.py,
+#DY3JetsToLL,,96.36,,,/DY3JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM,dbs,,4,GENXSEC=112.0;GENBR=1;LEPTON_SETUP=2018;ADDZTREE=False,RecoProbabilities.py,
+#DY4JetsToLL,,51.4,,,/DY4JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,4,GENXSEC=44.03;GENBR=1;LEPTON_SETUP=2018;ADDZTREE=False,RecoProbabilities.py,
+
+#TTTo2L2Nu,,87.3,,,/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,1,GENXSEC=91.7701;GENBR=1;LEPTON_SETUP=2018;ADDZTREE=False,RecoProbabilities.py,
+#PROCESS_CR=True:removed after GENBR=1 
+
+
+###,,,,,,,,,,,Other backgrounds
+##TTTo2L2Nu,,87.3,,,/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,1,GENXSEC=91.7701;GENBR=1;LEPTON_SETUP=2018;ADDZTREE=False,RecoProbabilities.py,TTJetsDiLep,,57.35,,,/TTJets_DiLept_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,1,GENXSEC=54.23;GENBR=1;LEPTON_SETUP=2018;ADDZTREE=False,RecoProbabilities.py,
+#TTJetsDiLep,,57.35,,,/TTJets_DiLept_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM,dbs,,1,GENXSEC=54.23;GENBR=1;LEPTON_SETUP=2018;ADDZTREE=False,RecoProbabilities.py,
+#WZ,,47.13,,,/WZ_TuneCP5_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v3/MINIAODSIM,dbs,,1,GENXSEC=47.13;GENBR=1;LEPTON_SETUP=2018;ADDZTREE=False,RecoProbabilities.py,
+#ZZ,,16.52,,,/ZZ_TuneCP5_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM,dbs,,1,GENXSEC=16.52;GENBR=1;LEPTON_SETUP=2018;ADDZTREE=False,RecoProbabilities.py,
+

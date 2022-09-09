@@ -1,4 +1,4 @@
-/** \class ZZ4lAnalyzer  
+/** \class ZZ2l2qAnalyzer  
  *
  *  For the time being: retrieving all relevant information from candidates and filling the 2011 "flagship" plots
  *
@@ -39,7 +39,7 @@
 #include <ZZAnalysis/AnalysisStep/interface/MCHistoryTools.h>
 #include <ZZAnalysis/AnalysisStep/interface/PileUpWeight.h>
 #include <ZZAnalysis/AnalysisStep/interface/Fisher.h>
-#include "ZZ4lConfigHelper.h"
+#include "ZZ2l2qConfigHelper.h"
 #include <boost/lexical_cast.hpp>
 
 #include <iostream>
@@ -58,6 +58,12 @@
 #include <ZZAnalysis/AnalysisStep/interface/bitops.h>
 #include <algorithm>
 
+#include <DataFormats/PatCandidates/interface/Jet.h>
+#include <CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h>
+#include <CondFormats/JetMETObjects/interface/JetCorrectorParameters.h>
+#include <JetMETCorrections/Objects/interface/JetCorrectionsRecord.h>
+#include <JetMETCorrections/Modules/interface/JetResolution.h>
+
 using namespace std;
 using namespace edm;
 using namespace reco;
@@ -72,11 +78,11 @@ namespace {
 }
 
 
-class ZZ4lAnalyzer: public edm::EDAnalyzer {
+class ZZ2l2qAnalyzer: public edm::EDAnalyzer {
 public:
 
-  explicit ZZ4lAnalyzer(const edm::ParameterSet& pset);
-  ~ZZ4lAnalyzer();
+  explicit ZZ2l2qAnalyzer(const edm::ParameterSet& pset);
+  ~ZZ2l2qAnalyzer();
   
   void analyze(const edm::Event & event, const edm::EventSetup& eventSetup);
   void endLuminosityBlock(const edm::LuminosityBlock &, const edm::EventSetup&);
@@ -87,7 +93,7 @@ public:
 		     float iso=-1, float SIP=-1);
   
 private:
-  ZZ4lConfigHelper myHelper;
+  ZZ2l2qConfigHelper myHelper;
   std::string theCandLabel;
   bool isMC;
   bool dumpMC;
@@ -103,6 +109,9 @@ private:
   double gen_ZZ4e;
   double gen_ZZ4mu;
   double gen_ZZ2mu2e;
+  double gen_ZZ2mu2q;
+  double gen_ZZ2e2q;
+  double gen_ZZ2tau2q;
   double gen_ZZtau;
   double gen_BUGGY;      //Events to be filtered out.
   double Nevt_PAT;
@@ -170,14 +179,18 @@ private:
   TH1F* hGenZZMass_4e;
   TH1F* hGenZZMass_4mu;
   TH1F* hGenZZMass_2e2mu;
+  TH1F* hGenZZMass_2e2q;
+  TH1F* hGenZZMass_2tau2q;
+  TH1F* hGenZZMass_2mu2q;
   TH1F* hGenZZMass_2l2tau;
 
   edm::EDGetTokenT<vector<Vertex> > vtxToken;
   edm::EDGetTokenT<double> rhoToken;
   edm::EDGetTokenT<edm::View<reco::Candidate> > genParticleToken;
   edm::EDGetTokenT<GenEventInfoProduct> genInfoToken;
-  //edm::EDGetTokenT<edm::View<pat::Jet> > jetToken;
   edm::EDGetTokenT<edm::View<reco::GenJet> > genJetsToken;//added
+
+  //edm::EDGetTokenT<edm::View<pat::Jet> > jetToken;
   edm::EDGetTokenT<edm::TriggerResults> triggerResultToken;
   edm::EDGetTokenT<edm::View<reco::Candidate> > softLeptonToken;
 
@@ -190,7 +203,7 @@ private:
 };
 
 // Constructor
-ZZ4lAnalyzer::ZZ4lAnalyzer(const ParameterSet& pset) :
+ZZ2l2qAnalyzer::ZZ2l2qAnalyzer(const ParameterSet& pset) :
   myHelper(pset),
   theCandLabel(pset.getUntrackedParameter<string>("candCollection")),
   dumpMC(pset.getUntrackedParameter<bool>("dumpMC",false)),
@@ -201,6 +214,9 @@ ZZ4lAnalyzer::ZZ4lAnalyzer(const ParameterSet& pset) :
   gen_ZZ4e(0),
   gen_ZZ4mu(0),
   gen_ZZ2mu2e(0),
+  gen_ZZ2mu2q(0),
+  gen_ZZ2e2q(0),
+  gen_ZZ2tau2q(0),
   gen_ZZtau(0),
   gen_BUGGY(0),
   Nevt_PAT(0),
@@ -221,9 +237,10 @@ ZZ4lAnalyzer::ZZ4lAnalyzer(const ParameterSet& pset) :
   rhoToken = consumes<double>(edm::InputTag("fixedGridRhoFastjetAll",""));
   genParticleToken = consumes<edm::View<reco::Candidate> >( edm::InputTag("prunedGenParticles"));
   genInfoToken = consumes<GenEventInfoProduct>( edm::InputTag("generator"));
+  genJetsToken = consumes<edm::View<reco::GenJet> >(edm::InputTag("slimmedGenJets")); //ATjets, added
+
   consumesMany<std::vector< PileupSummaryInfo > >();
   //jetToken = consumes<edm::View<pat::Jet> >(edm::InputTag("cleanJets"));
-  genJetsToken = consumes<edm::View<reco::GenJet> >(edm::InputTag("slimmedGenJets"));//added
   triggerResultToken = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults"));
   softLeptonToken = consumes<edm::View<reco::Candidate> >(edm::InputTag("softLeptons"));
 
@@ -233,12 +250,12 @@ ZZ4lAnalyzer::ZZ4lAnalyzer(const ParameterSet& pset) :
   if (isMC) pileUpReweight = new PileUpWeight(myHelper.sampleType(), myHelper.setup());
 }
 
-ZZ4lAnalyzer::~ZZ4lAnalyzer()
+ZZ2l2qAnalyzer::~ZZ2l2qAnalyzer()
 {
   delete pileUpReweight;
 }
 
-void ZZ4lAnalyzer::beginJob(){
+void ZZ2l2qAnalyzer::beginJob(){
   // Book some control histograms
   edm::Service<TFileService> fileService;
 
@@ -253,6 +270,9 @@ void ZZ4lAnalyzer::beginJob(){
   hGenZZMass_4e     = fileService->make<TH1F>("hGenZZMass_4e"    ,"hGenZZMass_4e"    ,13000,0,13000);
   hGenZZMass_4mu    = fileService->make<TH1F>("hGenZZMass_4mu"   ,"hGenZZMass_4mu"   ,13000,0,13000);
   hGenZZMass_2e2mu  = fileService->make<TH1F>("hGenZZMass_2e2mu" ,"hGenZZMass_2e2mu" ,13000,0,13000);
+  hGenZZMass_2e2q  = fileService->make<TH1F>("hGenZZMass_2e2q" ,"hGenZZMass_2e2q" ,13000,0,13000);
+  hGenZZMass_2tau2q  = fileService->make<TH1F>("hGenZZMass_2tau2q" ,"hGenZZMass_2tau2q" ,13000,0,13000);
+  hGenZZMass_2mu2q  = fileService->make<TH1F>("hGenZZMass_2mu2q" ,"hGenZZMass_2mu2q" ,13000,0,13000);
   hGenZZMass_2l2tau = fileService->make<TH1F>("hGenZZMass_2l2tau","hGenZZMass_2l2tau",13000,0,13000);
 
   // Counting Histograms. We do not want sumw2 on these!
@@ -292,7 +312,7 @@ void ZZ4lAnalyzer::beginJob(){
 }
 
 
-void ZZ4lAnalyzer::endLuminosityBlock(const edm::LuminosityBlock & iLumi, const edm::EventSetup & iSetup) 
+void ZZ2l2qAnalyzer::endLuminosityBlock(const edm::LuminosityBlock & iLumi, const edm::EventSetup & iSetup) 
 {
 
   double Nevt_preskim = -1.;
@@ -319,7 +339,7 @@ void ZZ4lAnalyzer::endLuminosityBlock(const edm::LuminosityBlock & iLumi, const 
 
 
 
-void ZZ4lAnalyzer::endJob(){
+void ZZ2l2qAnalyzer::endJob(){
 
   cout << endl;
   cout << "*************************" <<endl;
@@ -327,6 +347,9 @@ void ZZ4lAnalyzer::endJob(){
   if (isMC) {
     cout << "gen_BUGGY:        " << gen_BUGGY << endl;
     cout << "gen_ZZ4mu:        " << gen_ZZ4mu << endl;
+    cout << "gen_ZZ2mu2q:        " << gen_ZZ2mu2q << endl;
+    cout << "gen_ZZ2e2q:        " << gen_ZZ2e2q << endl;
+    cout << "gen_ZZ2tau2q:        " << gen_ZZ2tau2q << endl;
     cout <<  "gen_ZZ4e:         " << gen_ZZ4e << endl;
     cout <<  "gen_ZZ2mu2e:      " << gen_ZZ2mu2e << endl;
     cout <<  "gen_ZZtau:        " << gen_ZZtau << endl;
@@ -384,7 +407,7 @@ void ZZ4lAnalyzer::endJob(){
 
 
 
-void ZZ4lAnalyzer::analyze(const Event & event, const EventSetup& eventSetup){  
+void ZZ2l2qAnalyzer::analyze(const Event & event, const EventSetup& eventSetup){  
   int irun=event.id().run();
   long long int ievt=event.id().event(); 
   int ils =event.luminosityBlock();
@@ -406,20 +429,22 @@ void ZZ4lAnalyzer::analyze(const Event & event, const EventSetup& eventSetup){
     edm::Handle<edm::View<reco::Candidate> > genParticles;
     event.getByToken(genParticleToken, genParticles);
     edm::Handle<GenEventInfoProduct> genInfo;
+    edm::Handle<edm::View<reco::GenJet> >  genJets;//added
     event.getByToken(genInfoToken, genInfo);
-    edm::Handle<edm::View<reco::GenJet> > genJets; //ATjets,added
-    event.getByToken(genInfoToken, genInfo);//ATjets, added 
+    event.getByToken(genJetsToken, genJets);//added
 
-//    MCHistoryTools mch(event, sampleName, genParticles, genInfo);
-    MCHistoryTools mch(event, sampleName, genParticles, genInfo, genJets, false);//changed
+    //MCHistoryTools mch(event, sampleName, genParticles, genInfo);
+    MCHistoryTools mch(event, sampleName, genParticles, genInfo, genJets ,false);//changed
     genFinalState = mch.genFinalState();
-
     const reco::Candidate* genH = mch.genH();
     std::vector<const reco::Candidate *> genZLeps = mch.sortedGenZZLeps();
+    std::vector<const reco::GenJet *> genJets_test = mch.GenJets();
     if(genH!=0){
       GenZZMass = genH->mass();
-    }else if(genZLeps.size()==4){ // for bkgd 4l events, take the mass of the ZZ(4l) system
-      GenZZMass = (genZLeps.at(0)->p4()+genZLeps.at(1)->p4()+genZLeps.at(2)->p4()+genZLeps.at(3)->p4()).M();
+    }else if(genZLeps.size()==2 && genJets_test.size()==2){ // for bkgd 4l events, take the mass of the ZZ(4l) system
+    //}else if(genZLeps.size()==4 ){ // for bkgd 4l events, take the mass of the ZZ(4l) system
+      //GenZZMass = (genZLeps.at(0)->p4()+genZLeps.at(1)->p4()+genZLeps.at(2)->p4()+genZLeps.at(3)->p4()).M();
+      GenZZMass = (genZLeps.at(0)->p4()+genZLeps.at(1)->p4()+genJets_test.at(0)->p4()+genJets_test.at(0)->p4()).M();
     }
     genHEPMCweight = mch.gethepMCweight();
 
@@ -433,9 +458,18 @@ void ZZ4lAnalyzer::analyze(const Event & event, const EventSetup& eventSetup){
     } else if (genFinalState == EEMM) {
       ++gen_ZZ2mu2e;
       hGenZZMass_2e2mu->Fill( GenZZMass, genHEPMCweight*PUweight );
+    } else if (genFinalState == EEQQ) {
+      ++gen_ZZ2e2q;
+      hGenZZMass_2e2q->Fill( GenZZMass, genHEPMCweight*PUweight );
+    } else if (genFinalState == MMQQ) {
+      ++gen_ZZ2mu2q;
+      hGenZZMass_2mu2q->Fill( GenZZMass, genHEPMCweight*PUweight );
     } else if (genFinalState == LLTT || genFinalState == llTT || genFinalState == TTTT){
       ++gen_ZZtau;
       hGenZZMass_2l2tau->Fill( GenZZMass, genHEPMCweight*PUweight );
+    } else if (genFinalState == TTQQ){
+      ++gen_ZZ2tau2q;
+      hGenZZMass_2tau2q->Fill( GenZZMass, genHEPMCweight*PUweight );
     } else if (genFinalState == BUGGY){
       ++gen_BUGGY;
       return;
@@ -671,7 +705,7 @@ void ZZ4lAnalyzer::analyze(const Event & event, const EventSetup& eventSetup){
 
 
 
-void ZZ4lAnalyzer::printParticle(const reco::Candidate* c, string idx, int pdgId, 
+void ZZ2l2qAnalyzer::printParticle(const reco::Candidate* c, string idx, int pdgId, 
 				 float iso, float SIP) {
 	
   const int precision = 3;
@@ -708,5 +742,5 @@ void ZZ4lAnalyzer::printParticle(const reco::Candidate* c, string idx, int pdgId
 }
 
 #include "FWCore/Framework/interface/MakerMacros.h"
-DEFINE_FWK_MODULE(ZZ4lAnalyzer);
+DEFINE_FWK_MODULE(ZZ2l2qAnalyzer);
 

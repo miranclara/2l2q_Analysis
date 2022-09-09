@@ -33,6 +33,9 @@ enum Channel {MMMM=0,
 	      CRZLL=17,   // Old CR for Z2 with no SIP
 	      CRZ2mLL=19, // A CR: Z->mumu + l+l- (with at least 1F)
 	      CRZ2eLL=20, // A CR: Z->ee   + l+l- (with at least 1F)
+	      EEQQ=29, // A CR: Z->ee   + l+l- (with at least 1F),changed
+	      MMQQ=30, // A CR: Z->ee   + l+l- (with at least 1F),changed
+	      TTQQ=31, // A CR: Z->ee   + l+l- (with at least 1F),changed
 	      NONE = 99, BUGGY=666};
 
 //Return string corresponding to integer code 

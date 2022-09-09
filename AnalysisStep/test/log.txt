@@ -1,0 +1,615 @@
+.string('102X_upgrade2018_realistic_v21')
+using the cut  allCutsAtOnce
+using allCutsAtOnce
+ ##################################################################### 
+ # WARNING: the module CondCore.DBCommon.CondDBSetup is deprecated.  # 
+ # Please import CondCore.CondDB.CondDB_cfi                          # 
+ ##################################################################### 
+ciao 1
+ciao 2
+ciao 3
+ciao 4
+04-Aug-2022 15:33:40 CEST  Initiating request to open file root://eoscms.cern.ch//eos/cms/store/mc/RunIIAutumn18MiniAOD/GluGluHToZZTo4L_M125_13TeV_powheg2_JHUGenV7011_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/270000/E5E2F122-AA57-5248-8177-594EC87DD494.root
+%MSG-w XrdAdaptor:  file_open 04-Aug-2022 15:33:42 CEST pre-events
+Data is served from cern.ch instead of original site eoscms
+%MSG
+04-Aug-2022 15:33:42 CEST  Successfully opened file root://eoscms.cern.ch//eos/cms/store/mc/RunIIAutumn18MiniAOD/GluGluHToZZTo4L_M125_13TeV_powheg2_JHUGenV7011_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/270000/E5E2F122-AA57-5248-8177-594EC87DD494.root
+*****************************************************************************************************
+*                             MELA (Matrix Element Likelihood Approach)                             *
+*****************************************************************************************************
+*                                                                                                   *
+*                           Data analysis and Monte Carlo weights package                           *
+*         for analyses of resonances produced at pp, ppbar, and e+e- colliders, featuring:          *
+*                                                                                                   *
+*                                          * JHUGenMELA *                                           *
+*     Signal calculations based on analytical pdf.s, and JHU Generator (JHUGen) matrix elements     *
+*                                    (See JHUGen credits below)                                     *
+*                                                                                                   *
+*                                             * MCFM *                                              *
+*    Signal, background, and interference calculations, modified based on JHUGen matrix elements    *
+*                                     (See MCFM credits below)                                      *
+*                                                                                                   *
+*                             For more details: http://spin.pha.jhu.edu                             *
+*                                                                                                   *
+*****************************************************************************************************
+ ************** MCFM - version 7.0 ****************
+ *                                                *
+ * MCFM, v7.0                   March 20th, 2015  *
+ *                                                *
+ * Authors: John Campbell, Keith Ellis,           *
+ *          Walter Giele, Ciaran Williams         *
+ *         (johnmc@fnal.gov, ellis@fnal.gov,      *
+ *          giele@fnal.gov,ciaran@fnal.gov)       *
+ *                                                *
+ * For details see:                               *
+ *                                                *
+ *  arXiv:1502.02990 (VBF and VBS Higgs)          *
+ *  arXiv:1403.2641  (Triphoton production)       *
+ *  arXiv:1312.1628  (gg->WW, Higgs interference) *
+ *  arXiv:1311.3589  (gg->ZZ, Higgs interference) *
+ *  Phys.Rev.D87:114006, arXiv:1302.3856          *
+ *  (tZ, tH -- with R. Rontsch)                   *
+ *  arXiv:1211.6390 (DM, P. Fox and C. Williams)  *
+ *  JHEP 1211:162 (2012), arXiv:1208.0566         *
+ *  (Z+gam+jet,Z+gam+gam -- with H. Hartanto)     *
+ *  arXiv:1204.1513 (top production+decay)        *
+ *  JHEP 1207:052 (2012), arXiv:1204.5678 (ttW)   *
+ *  JHEP 1110:005 (2011), arXiv:1107.5569         *
+ *         (gg->WW,Higgs intference)              *
+ *  JHEP 1107:018 (2011), arXiv:1105.0020         *
+ *         (diboson update)                       *
+ *  JHEP 1103:027 (2011), arXiv:1011.6647         *
+ *         (Wbb for mb>0, with S. Badger)         *
+ *  Phys.Rev.D81:074023, arXiv:1001.4495 (H+2jet) *
+ *                                                *
+ *  P.R.L. 102:142001, arXiv:0903.0005 [hep-ph]   *
+ *    (t-channel single top + explicit b,         *
+ *      JC, R.Frederix, F.Maltoni, F.Tramontano)  *
+ *  N.P.B 726:109(2005), hep-ph/0506289 (W+t)     *
+ *  Phys.Rev.D70:094012, hep-ph/0408158 (Sngl Top)*
+ *       (with Francesco Tramontano)              *
+ *                                                *
+ *  Phys.Rev.D65:113007, hep-ph/0202176 (W,Z+2j)  *
+ *  Phys.Rev.D62:114012, hep-ph/0006304 (W,Z+bb)  *
+ *  Phys.Rev.D60:113006, hep-ph/9905386 (diboson) *
+ *                                                *
+ * On the web:  http://mcfm.fnal.gov/             *
+ **************************************************
+
+ * Using input file named input.DATdata/process.DATdata/Pdfdata/cteq6l1.tbl	- MCFM symlinks are
+
+ * [Flags to specify the mode in which MCFM is run]                                          
+ *                   -1            [nevtrequested] 
+ *                    F            [creatent] 
+ *                    F            [skipnt] 
+ *                    F            [dswhisto] 
+ *                    F            [writetop] 
+ *                    F            [writedat] 
+ *                    F            [writegnu] 
+ *                    T            [writeroot] 
+ *                    F            [writepwg] 
+
+ * [General options to specify the process and execution]                                    
+ *                   81            [nproc] 
+ *                 lord            [part] 
+ * test                            [runstring] 
+ *            8000.0000            [sqrts] 
+ *                    1            [ih1] 
+ *                    1            [ih2] 
+ *             125.0000            [hmass] 
+ *               0.5000            [scale] 
+ *               0.5000            [facscale] 
+ * m(3456)                         [dynamicscale] 
+ *                    F            [zerowidth] 
+ *                    F            [removebr] 
+ *                    4            [itmx1] 
+ *               100000            [ncall1] 
+ *                   10            [itmx2] 
+ *               100000            [ncall2] 
+ *                 1500            [ij] 
+ *                    F            [dryrun] 
+ *                    T            [Qflag] 
+ *                    T            [Gflag] 
+
+ * [Heavy quark masses]                                                                      
+ *             173.2000            [top mass] 
+ *               4.7500            [bottom mass] 
+ *               1.2750            [charm mass] 
+
+ * [Pdf selection]                                                                           
+ *              cteq6l1            [pdlabel] 
+ *                    4            [NGROUP] 
+ *                   46            [NSET] 
+ * cteq6mE.LHgrid                  [LHAPDF group] 
+ *                   -1            [LHAPDF set] 
+
+ * [Jet definition and event cuts]                                                           
+ *               4.0000            [m34min] 
+ *            8000.0000            [m34max] 
+ *               4.0000            [m56min] 
+ *            8000.0000            [m56max] 
+ *               0.0000            [m3456min] 
+ *           14000.0000            [m3456max] 
+ *                    T            [inclusive] 
+ *                 ankt            [algorithm] 
+ *              15.0000            [ptjetmin] 
+ *               0.0000            [etajetmin] 
+ *               3.0000            [etajetmax] 
+ *               0.5000            [Rcut] 
+ *                    F            [makecuts] 
+ *               3.0000            [leptpt] 
+ *              99.0000            [leptrap] 
+ *    0.000,   0.000                [leptveto] 
+ *               0.0000            [misspt] 
+ *               0.0000            [leptpt2] 
+ *              99.0000            [leptrap2] 
+ *    0.000,   0.000                [leptveto2] 
+ *               0.0000            [mtrans34cut] 
+ *               0.0000            [Rjlmin] 
+ *               0.0000            [Rllmin] 
+ *               0.0000            [delyjjmin] 
+ *                    F            [jetsopphem] 
+ *                    0            [lbjscheme] 
+ *               0.0000            [ptbjetmin] 
+ *              99.0000            [etabjetmax] 
+
+ * [Settings for photon processes]                                                           
+ *                    F            [frag] 
+ *             BFGsetII            [fragset] 
+ *              62.7703            [frag_scale] 
+ *              20.0000            [gammpt] 
+ *               2.5000            [gammrap] 
+ *              20.0000            [gammpt2] 
+ *              20.0000            [gammpt3] 
+ *               0.7000            [Rgalmin] 
+ *               0.4000            [Rgagamin] 
+ *               0.4000            [Rgajetmin] 
+ *               0.7000            [cone_ang] 
+ *               0.5000            [epsilon_h] 
+
+ * [Anomalous couplings of the W and Z]                                                      
+ *               0.0000            [delg1_z] 
+ *               0.0000            [delk_z] 
+ *               0.0000            [delk_g] 
+ *               0.0000            [lambda_z] 
+ *               0.0000            [lambda_g] 
+ *               0.0000            [h1Z] 
+ *               0.0000            [h1gam] 
+ *               0.0000            [h2Z] 
+ *               0.0000            [h2gam] 
+ *               0.0000            [h3Z] 
+ *               0.0000            [h3gam] 
+ *               0.0000            [h4Z] 
+ *               0.0000            [h4gam] 
+ *               2.0000            [tevscale] 
+
+ * [Anomalous width of the Higgs]                                                            
+ *               1.0000            [Gamma_H/Gamma_H(SM)] 
+
+ * [How to resume/save a run]                                                                
+ *                    F            [readin] 
+ *                    F            [writeout] 
+ *                                 [ingridfile] 
+ *                                 [outgridfile] 
+
+ * [Technical parameters that should not normally be changed]
+
+ *                    F            [debug] 
+
+ *************** Anomalous couplings ****************
+ *                                                  *
+ *            Delta_g1(Z)  =    0.00                *
+ *            Delta_g1(g)  =    0.00                *
+ *            Delta_K(Z)   =    0.00                *
+ *            Delta_K(g)   =    0.00                *
+ *            Lambda(Z)    =    0.00                *
+ *            Lambda(g)    =    0.00                *
+ *            TeV-scale    =    2.00 TeV            *
+ ****************************************************
+ ====================================================
+   This is QCDLoop - version 1.95                    
+   Authors: Keith Ellis and Giulia Zanderighi        
+   (ellis@fnal.gov, g.zanderighi1@physics.ox.ac.uk)  
+   For details see FERMILAB-PUB-07-633-T,OUTP-07/16P 
+   arXiv:0712.1851 [hep-ph], published in            
+   JHEP 0802:002,2008.                               
+ ====================================================
+ ====================================================
+   FF 2.0, a package to evaluate one-loop integrals
+ written by G. J. van Oldenborgh, NIKHEF-H, Amsterdam
+ ====================================================
+ for the algorithms used see preprint NIKHEF-H 89/17,
+ 'New Algorithms for One-loop Integrals', by G.J. van
+ Oldenborgh and J.A.M. Vermaseren, published in 
+ Zeitschrift fuer Physik C46(1990)425.
+ ====================================================
+ ffini: precx =    4.4408920985006262E-016
+ ffini: precc =    4.4408920985006262E-016
+ ffini: xalogm =    2.2250738585072014E-308
+ ffini: xclogm =    2.2250738585072014E-308
+  
+  ***************************************************************************************
+  *                                 JHUGen MELA v7.5.0                                  *
+  ***************************************************************************************
+  *                                                                                     *
+  *   Spin and parity determination of single-produced resonances at hadron colliders   *
+  *                                                                                     *
+  *         I. Anderson, S. Bolognesi, F. Caola, J. Davis, Y. Gao, A. Gritsan,          *
+  *          Z. Guo, C. Martin, K. Melnikov, R. Rontsch, H. Roskes, U. Sarica,          *
+  *                 M. Schulze, N. Tran, A. Whitbeck, M. Xiao, Y. Zhou                  *
+  *              Phys.Rev. D81 (2010) 075022;  arXiv:1001.3396  [hep-ph],               *
+  *              Phys.Rev. D86 (2012) 095031;  arXiv:1208.4018  [hep-ph],               *
+  *              Phys.Rev. D89 (2014) 035007;  arXiv:1309.4819  [hep-ph],               *
+  *              Phys.Rev. D94 (2016) 055023;  arXiv:1606.03107 [hep-ph],               *
+  *              Phys.Rev. D102 (2020) 056022; arXiv:2002.09888 [hep-ph],               *
+  *                                            arXiv:2104.04277 [hep-ph].               *
+  *                                                                                     *
+  ***************************************************************************************
+  
+ JHUGen CKM initialization
+ Vud =   0.97428499999999996     
+ Vus =   0.22528999999999999     
+ Vub =    3.6269374133152273E-003
+ Vcd =  -0.22518199999999999     
+ Vcs =   0.97342439999999997     
+ Vcb =    4.1689379470556870E-002
+ Vtd =    0.0000000000000000     
+ Vts =   -4.0920069000000003E-002
+ Vtb =   0.99916242320907722     
+  ****************************************
+ 
+       NNPDFDriver version 1.0.3
+   Grid: Pdfdata/NNPDF30_lo_as_0130.LHgrid
+  ****************************************
+                                                            
+         *******************************************        
+         *              C O L L I E R              *        
+         *                                         *        
+         *        Complex One-Loop Library         *        
+         *      In Extended Regularizations        *        
+         *                                         *        
+         *    by A.Denner, S.Dittmaier, L.Hofer    *        
+         *                                         *        
+         *              version  1.2               *        
+         *                                         *        
+         *******************************************        
+                                                            
+*****************************************************************************************************
+*                             MELA (Matrix Element Likelihood Approach)                             *
+*****************************************************************************************************
+*                                                                                                   *
+*                           Data analysis and Monte Carlo weights package                           *
+*         for analyses of resonances produced at pp, ppbar, and e+e- colliders, featuring:          *
+*                                                                                                   *
+*                                          * JHUGenMELA *                                           *
+*     Signal calculations based on analytical pdf.s, and JHU Generator (JHUGen) matrix elements     *
+*                                    (See JHUGen credits below)                                     *
+*                                                                                                   *
+*                                             * MCFM *                                              *
+*    Signal, background, and interference calculations, modified based on JHUGen matrix elements    *
+*                                     (See MCFM credits below)                                      *
+*                                                                                                   *
+*                             For more details: http://spin.pha.jhu.edu                             *
+*                                                                                                   *
+*****************************************************************************************************
+ ************** MCFM - version 7.0 ****************
+ *                                                *
+ * MCFM, v7.0                   March 20th, 2015  *
+ *                                                *
+ * Authors: John Campbell, Keith Ellis,           *
+ *          Walter Giele, Ciaran Williams         *
+ *         (johnmc@fnal.gov, ellis@fnal.gov,      *
+ *          giele@fnal.gov,ciaran@fnal.gov)       *
+ *                                                *
+ * For details see:                               *
+ *                                                *
+ *  arXiv:1502.02990 (VBF and VBS Higgs)          *
+ *  arXiv:1403.2641  (Triphoton production)       *
+ *  arXiv:1312.1628  (gg->WW, Higgs interference) *
+ *  arXiv:1311.3589  (gg->ZZ, Higgs interference) *
+ *  Phys.Rev.D87:114006, arXiv:1302.3856          *
+ *  (tZ, tH -- with R. Rontsch)                   *
+ *  arXiv:1211.6390 (DM, P. Fox and C. Williams)  *
+ *  JHEP 1211:162 (2012), arXiv:1208.0566         *
+ *  (Z+gam+jet,Z+gam+gam -- with H. Hartanto)     *
+ *  arXiv:1204.1513 (top production+decay)        *
+ *  JHEP 1207:052 (2012), arXiv:1204.5678 (ttW)   *
+ *  JHEP 1110:005 (2011), arXiv:1107.5569         *
+ *         (gg->WW,Higgs intference)              *
+ *  JHEP 1107:018 (2011), arXiv:1105.0020         *
+ *         (diboson update)                       *
+ *  JHEP 1103:027 (2011), arXiv:1011.6647         *
+ *         (Wbb for mb>0, with S. Badger)         *
+ *  Phys.Rev.D81:074023, arXiv:1001.4495 (H+2jet) *
+ *                                                *
+ *  P.R.L. 102:142001, arXiv:0903.0005 [hep-ph]   *
+ *    (t-channel single top + explicit b,         *
+ *      JC, R.Frederix, F.Maltoni, F.Tramontano)  *
+ *  N.P.B 726:109(2005), hep-ph/0506289 (W+t)     *
+ *  Phys.Rev.D70:094012, hep-ph/0408158 (Sngl Top)*
+ *       (with Francesco Tramontano)              *
+ *                                                *
+ *  Phys.Rev.D65:113007, hep-ph/0202176 (W,Z+2j)  *
+ *  Phys.Rev.D62:114012, hep-ph/0006304 (W,Z+bb)  *
+ *  Phys.Rev.D60:113006, hep-ph/9905386 (diboson) *
+ *                                                *
+ * On the web:  http://mcfm.fnal.gov/             *
+ **************************************************
+
+ * Using input file named input.DATdata/process.DATdata/Pdfdata/cteq6l1.tbl	- MCFM symlinks are
+
+ * [Flags to specify the mode in which MCFM is run]                                          
+ *                   -1            [nevtrequested] 
+ *                    F            [creatent] 
+ *                    F            [skipnt] 
+ *                    F            [dswhisto] 
+ *                    F            [writetop] 
+ *                    F            [writedat] 
+ *                    F            [writegnu] 
+ *                    T            [writeroot] 
+ *                    F            [writepwg] 
+
+ * [General options to specify the process and execution]                                    
+ *                   81            [nproc] 
+ *                 lord            [part] 
+ * test                            [runstring] 
+ *            8000.0000            [sqrts] 
+ *                    1            [ih1] 
+ *                    1            [ih2] 
+ *             125.0000            [hmass] 
+ *               0.5000            [scale] 
+ *               0.5000            [facscale] 
+ * m(3456)                         [dynamicscale] 
+ *                    F            [zerowidth] 
+ *                    F            [removebr] 
+ *                    4            [itmx1] 
+ *               100000            [ncall1] 
+ *                   10            [itmx2] 
+ *               100000            [ncall2] 
+ *                 1500            [ij] 
+ *                    F            [dryrun] 
+ *                    T            [Qflag] 
+ *                    T            [Gflag] 
+
+ * [Heavy quark masses]                                                                      
+ *             173.2000            [top mass] 
+ *               4.7500            [bottom mass] 
+ *               1.2750            [charm mass] 
+
+ * [Pdf selection]                                                                           
+ *              cteq6l1            [pdlabel] 
+ *                    4            [NGROUP] 
+ *                   46            [NSET] 
+ * cteq6mE.LHgrid                  [LHAPDF group] 
+ *                   -1            [LHAPDF set] 
+
+ * [Jet definition and event cuts]                                                           
+ *               4.0000            [m34min] 
+ *            8000.0000            [m34max] 
+ *               4.0000            [m56min] 
+ *            8000.0000            [m56max] 
+ *               0.0000            [m3456min] 
+ *           14000.0000            [m3456max] 
+ *                    T            [inclusive] 
+ *                 ankt            [algorithm] 
+ *              15.0000            [ptjetmin] 
+ *               0.0000            [etajetmin] 
+ *               3.0000            [etajetmax] 
+ *               0.5000            [Rcut] 
+ *                    F            [makecuts] 
+ *               3.0000            [leptpt] 
+ *              99.0000            [leptrap] 
+ *    0.000,   0.000                [leptveto] 
+ *               0.0000            [misspt] 
+ *               0.0000            [leptpt2] 
+ *              99.0000            [leptrap2] 
+ *    0.000,   0.000                [leptveto2] 
+ *               0.0000            [mtrans34cut] 
+ *               0.0000            [Rjlmin] 
+ *               0.0000            [Rllmin] 
+ *               0.0000            [delyjjmin] 
+ *                    F            [jetsopphem] 
+ *                    0            [lbjscheme] 
+ *               0.0000            [ptbjetmin] 
+ *              99.0000            [etabjetmax] 
+
+ * [Settings for photon processes]                                                           
+ *                    F            [frag] 
+ *             BFGsetII            [fragset] 
+ *              62.7703            [frag_scale] 
+ *              20.0000            [gammpt] 
+ *               2.5000            [gammrap] 
+ *              20.0000            [gammpt2] 
+ *              20.0000            [gammpt3] 
+ *               0.7000            [Rgalmin] 
+ *               0.4000            [Rgagamin] 
+ *               0.4000            [Rgajetmin] 
+ *               0.7000            [cone_ang] 
+ *               0.5000            [epsilon_h] 
+
+ * [Anomalous couplings of the W and Z]                                                      
+ *               0.0000            [delg1_z] 
+ *               0.0000            [delk_z] 
+ *               0.0000            [delk_g] 
+ *               0.0000            [lambda_z] 
+ *               0.0000            [lambda_g] 
+ *               0.0000            [h1Z] 
+ *               0.0000            [h1gam] 
+ *               0.0000            [h2Z] 
+ *               0.0000            [h2gam] 
+ *               0.0000            [h3Z] 
+ *               0.0000            [h3gam] 
+ *               0.0000            [h4Z] 
+ *               0.0000            [h4gam] 
+ *               2.0000            [tevscale] 
+
+ * [Anomalous width of the Higgs]                                                            
+ *               1.0000            [Gamma_H/Gamma_H(SM)] 
+
+ * [How to resume/save a run]                                                                
+ *                    F            [readin] 
+ *                    F            [writeout] 
+ *                                 [ingridfile] 
+ *                                 [outgridfile] 
+
+ * [Technical parameters that should not normally be changed]
+
+ *                    F            [debug] 
+
+ *************** Anomalous couplings ****************
+ *                                                  *
+ *            Delta_g1(Z)  =    0.00                *
+ *            Delta_g1(g)  =    0.00                *
+ *            Delta_K(Z)   =    0.00                *
+ *            Delta_K(g)   =    0.00                *
+ *            Lambda(Z)    =    0.00                *
+ *            Lambda(g)    =    0.00                *
+ *            TeV-scale    =    2.00 TeV            *
+ ****************************************************
+ ====================================================
+   This is QCDLoop - version 1.95                    
+   Authors: Keith Ellis and Giulia Zanderighi        
+   (ellis@fnal.gov, g.zanderighi1@physics.ox.ac.uk)  
+   For details see FERMILAB-PUB-07-633-T,OUTP-07/16P 
+   arXiv:0712.1851 [hep-ph], published in            
+   JHEP 0802:002,2008.                               
+ ====================================================
+  
+  ***************************************************************************************
+  *                                 JHUGen MELA v7.5.0                                  *
+  ***************************************************************************************
+  *                                                                                     *
+  *   Spin and parity determination of single-produced resonances at hadron colliders   *
+  *                                                                                     *
+  *         I. Anderson, S. Bolognesi, F. Caola, J. Davis, Y. Gao, A. Gritsan,          *
+  *          Z. Guo, C. Martin, K. Melnikov, R. Rontsch, H. Roskes, U. Sarica,          *
+  *                 M. Schulze, N. Tran, A. Whitbeck, M. Xiao, Y. Zhou                  *
+  *              Phys.Rev. D81 (2010) 075022;  arXiv:1001.3396  [hep-ph],               *
+  *              Phys.Rev. D86 (2012) 095031;  arXiv:1208.4018  [hep-ph],               *
+  *              Phys.Rev. D89 (2014) 035007;  arXiv:1309.4819  [hep-ph],               *
+  *              Phys.Rev. D94 (2016) 055023;  arXiv:1606.03107 [hep-ph],               *
+  *              Phys.Rev. D102 (2020) 056022; arXiv:2002.09888 [hep-ph],               *
+  *                                            arXiv:2104.04277 [hep-ph].               *
+  *                                                                                     *
+  ***************************************************************************************
+  
+ JHUGen CKM initialization
+ Vud =   0.97428499999999996     
+ Vus =   0.22528999999999999     
+ Vub =    3.6269374133152273E-003
+ Vcd =  -0.22518199999999999     
+ Vcs =   0.97342439999999997     
+ Vcb =    4.1689379470556870E-002
+ Vtd =    0.0000000000000000     
+ Vts =   -4.0920069000000003E-002
+ Vtb =   0.99916242320907722     
+  ****************************************
+ 
+       NNPDFDriver version 1.0.3
+   Grid: Pdfdata/NNPDF30_lo_as_0130.LHgrid
+  ****************************************
+                                                            
+         *******************************************        
+         *              C O L L I E R              *        
+         *                                         *        
+         *        Complex One-Loop Library         *        
+         *      In Extended Regularizations        *        
+         *                                         *        
+         *    by A.Denner, S.Dittmaier, L.Hofer    *        
+         *                                         *        
+         *              version  1.2               *        
+         *                                         *        
+         *******************************************        
+                                                            
+[LeptonSFHelper] SF maps opened from root files.
+Begin processing the 1st record. Run 1, Event 66004, LumiSection 12 on stream 0 at 04-Aug-2022 15:35:36.912 CEST
+ print the CUTS 1
+ID flag test print1
+isGood flag test print1
+isIsoFSRUncorr flag test print0
+isSIP flag test print1
+ print the CUTS 1
+ID flag test print1
+isGood flag test print1
+isIsoFSRUncorr flag test print1
+isSIP flag test print1
+good lep size = 2
+
+
+A fatal system signal has occurred: segmentation violation
+The following is the call stack containing the origin of the signal.
+
+Thread 7 (Thread 0x7f0b05fda700 (LWP 4404)):
+#0  0x00007f0b2a72de29 in syscall () from /lib64/libc.so.6
+#1  0x00007f0b2603679e in XrdSys::LinuxSemaphore::Wait (this=0x7f0b103de550) at /build/cmsbld/auto-builds/CMSSW_10_2_0_pre6-slc7_amd64_gcc700/build/CMSSW_10_2_0_pre6-build/BUILD/slc7_amd64_gcc700/external/xrootd/4.8.3-gnimlf/xrootd-4.8.3/src/./XrdSys/XrdSysLinuxSemaphore.hh:161
+#2  XrdCl::SyncQueue<XrdCl::JobManager::JobHelper>::Get (this=0x7f0b103e89f8) at /build/cmsbld/auto-builds/CMSSW_10_2_0_pre6-slc7_amd64_gcc700/build/CMSSW_10_2_0_pre6-build/BUILD/slc7_amd64_gcc700/external/xrootd/4.8.3-gnimlf/xrootd-4.8.3/src/./XrdCl/XrdClSyncQueue.hh:67
+#3  XrdCl::JobManager::RunJobs (this=0x7f0b103e89e0) at /build/cmsbld/auto-builds/CMSSW_10_2_0_pre6-slc7_amd64_gcc700/build/CMSSW_10_2_0_pre6-build/BUILD/slc7_amd64_gcc700/external/xrootd/4.8.3-gnimlf/xrootd-4.8.3/src/XrdCl/XrdClJobManager.cc:146
+#4  0x00007f0b26036989 in RunRunnerThread (arg=<optimized out>) at /build/cmsbld/auto-builds/CMSSW_10_2_0_pre6-slc7_amd64_gcc700/build/CMSSW_10_2_0_pre6-build/BUILD/slc7_amd64_gcc700/external/xrootd/4.8.3-gnimlf/xrootd-4.8.3/src/XrdCl/XrdClJobManager.cc:33
+#5  0x00007f0b2aa0aea5 in start_thread () from /lib64/libpthread.so.0
+#6  0x00007f0b2a733b0d in clone () from /lib64/libc.so.6
+Thread 6 (Thread 0x7f0b067db700 (LWP 4403)):
+#0  0x00007f0b2a72de29 in syscall () from /lib64/libc.so.6
+#1  0x00007f0b2603679e in XrdSys::LinuxSemaphore::Wait (this=0x7f0b103de550) at /build/cmsbld/auto-builds/CMSSW_10_2_0_pre6-slc7_amd64_gcc700/build/CMSSW_10_2_0_pre6-build/BUILD/slc7_amd64_gcc700/external/xrootd/4.8.3-gnimlf/xrootd-4.8.3/src/./XrdSys/XrdSysLinuxSemaphore.hh:161
+#2  XrdCl::SyncQueue<XrdCl::JobManager::JobHelper>::Get (this=0x7f0b103e89f8) at /build/cmsbld/auto-builds/CMSSW_10_2_0_pre6-slc7_amd64_gcc700/build/CMSSW_10_2_0_pre6-build/BUILD/slc7_amd64_gcc700/external/xrootd/4.8.3-gnimlf/xrootd-4.8.3/src/./XrdCl/XrdClSyncQueue.hh:67
+#3  XrdCl::JobManager::RunJobs (this=0x7f0b103e89e0) at /build/cmsbld/auto-builds/CMSSW_10_2_0_pre6-slc7_amd64_gcc700/build/CMSSW_10_2_0_pre6-build/BUILD/slc7_amd64_gcc700/external/xrootd/4.8.3-gnimlf/xrootd-4.8.3/src/XrdCl/XrdClJobManager.cc:146
+#4  0x00007f0b26036989 in RunRunnerThread (arg=<optimized out>) at /build/cmsbld/auto-builds/CMSSW_10_2_0_pre6-slc7_amd64_gcc700/build/CMSSW_10_2_0_pre6-build/BUILD/slc7_amd64_gcc700/external/xrootd/4.8.3-gnimlf/xrootd-4.8.3/src/XrdCl/XrdClJobManager.cc:33
+#5  0x00007f0b2aa0aea5 in start_thread () from /lib64/libpthread.so.0
+#6  0x00007f0b2a733b0d in clone () from /lib64/libc.so.6
+Thread 5 (Thread 0x7f0b06fdc700 (LWP 4402)):
+#0  0x00007f0b2a72de29 in syscall () from /lib64/libc.so.6
+#1  0x00007f0b2603679e in XrdSys::LinuxSemaphore::Wait (this=0x7f0b103de550) at /build/cmsbld/auto-builds/CMSSW_10_2_0_pre6-slc7_amd64_gcc700/build/CMSSW_10_2_0_pre6-build/BUILD/slc7_amd64_gcc700/external/xrootd/4.8.3-gnimlf/xrootd-4.8.3/src/./XrdSys/XrdSysLinuxSemaphore.hh:161
+#2  XrdCl::SyncQueue<XrdCl::JobManager::JobHelper>::Get (this=0x7f0b103e89f8) at /build/cmsbld/auto-builds/CMSSW_10_2_0_pre6-slc7_amd64_gcc700/build/CMSSW_10_2_0_pre6-build/BUILD/slc7_amd64_gcc700/external/xrootd/4.8.3-gnimlf/xrootd-4.8.3/src/./XrdCl/XrdClSyncQueue.hh:67
+#3  XrdCl::JobManager::RunJobs (this=0x7f0b103e89e0) at /build/cmsbld/auto-builds/CMSSW_10_2_0_pre6-slc7_amd64_gcc700/build/CMSSW_10_2_0_pre6-build/BUILD/slc7_amd64_gcc700/external/xrootd/4.8.3-gnimlf/xrootd-4.8.3/src/XrdCl/XrdClJobManager.cc:146
+#4  0x00007f0b26036989 in RunRunnerThread (arg=<optimized out>) at /build/cmsbld/auto-builds/CMSSW_10_2_0_pre6-slc7_amd64_gcc700/build/CMSSW_10_2_0_pre6-build/BUILD/slc7_amd64_gcc700/external/xrootd/4.8.3-gnimlf/xrootd-4.8.3/src/XrdCl/XrdClJobManager.cc:33
+#5  0x00007f0b2aa0aea5 in start_thread () from /lib64/libpthread.so.0
+#6  0x00007f0b2a733b0d in clone () from /lib64/libc.so.6
+Thread 4 (Thread 0x7f0b077dd700 (LWP 4401)):
+#0  0x00007f0b2aa11e9d in nanosleep () from /lib64/libpthread.so.0
+#1  0x00007f0b25e78ded in XrdSysTimer::Wait (mills=<optimized out>) at /build/cmsbld/auto-builds/CMSSW_10_2_0_pre6-slc7_amd64_gcc700/build/CMSSW_10_2_0_pre6-build/BUILD/slc7_amd64_gcc700/external/xrootd/4.8.3-gnimlf/xrootd-4.8.3/src/XrdSys/XrdSysTimer.cc:239
+#2  0x00007f0b25fda118 in XrdCl::TaskManager::RunTasks (this=0x7f0b0a484980) at /build/cmsbld/auto-builds/CMSSW_10_2_0_pre6-slc7_amd64_gcc700/build/CMSSW_10_2_0_pre6-build/BUILD/slc7_amd64_gcc700/external/xrootd/4.8.3-gnimlf/xrootd-4.8.3/src/XrdCl/XrdClTaskManager.cc:244
+#3  0x00007f0b25fda269 in RunRunnerThread (arg=<optimized out>) at /build/cmsbld/auto-builds/CMSSW_10_2_0_pre6-slc7_amd64_gcc700/build/CMSSW_10_2_0_pre6-build/BUILD/slc7_amd64_gcc700/external/xrootd/4.8.3-gnimlf/xrootd-4.8.3/src/XrdCl/XrdClTaskManager.cc:37
+#4  0x00007f0b2aa0aea5 in start_thread () from /lib64/libpthread.so.0
+#5  0x00007f0b2a733b0d in clone () from /lib64/libc.so.6
+Thread 3 (Thread 0x7f0b07fde700 (LWP 4400)):
+#0  0x00007f0b2a7340e3 in epoll_wait () from /lib64/libc.so.6
+#1  0x00007f0b25e7dc17 in XrdSys::IOEvents::PollE::Begin (this=0x7f0b103e8ba0, syncsem=<optimized out>, retcode=<optimized out>, eTxt=<optimized out>) at /build/cmsbld/auto-builds/CMSSW_10_2_0_pre6-slc7_amd64_gcc700/build/CMSSW_10_2_0_pre6-build/BUILD/slc7_amd64_gcc700/external/xrootd/4.8.3-gnimlf/xrootd-4.8.3/src/./XrdSys/XrdSysIOEventsPollE.icc:213
+#2  0x00007f0b25e7a4f5 in XrdSys::IOEvents::BootStrap::Start (parg=0x7ffda1c96b90) at /build/cmsbld/auto-builds/CMSSW_10_2_0_pre6-slc7_amd64_gcc700/build/CMSSW_10_2_0_pre6-build/BUILD/slc7_amd64_gcc700/external/xrootd/4.8.3-gnimlf/xrootd-4.8.3/src/XrdSys/XrdSysIOEvents.cc:131
+#3  0x00007f0b25e785e8 in XrdSysThread_Xeq (myargs=0x7f0b0a94fb20) at /build/cmsbld/auto-builds/CMSSW_10_2_0_pre6-slc7_amd64_gcc700/build/CMSSW_10_2_0_pre6-build/BUILD/slc7_amd64_gcc700/external/xrootd/4.8.3-gnimlf/xrootd-4.8.3/src/XrdSys/XrdSysPthread.cc:86
+#4  0x00007f0b2aa0aea5 in start_thread () from /lib64/libpthread.so.0
+#5  0x00007f0b2a733b0d in clone () from /lib64/libc.so.6
+Thread 2 (Thread 0x7f0b14c89700 (LWP 4366)):
+#0  0x00007f0b2aa121d9 in waitpid () from /lib64/libpthread.so.0
+#1  0x00007f0b25d01fc7 in edm::service::cmssw_stacktrace_fork() () from /cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_22/lib/slc7_amd64_gcc700/pluginFWCoreServicesPlugins.so
+#2  0x00007f0b25d02aaa in edm::service::InitRootHandlers::stacktraceHelperThread() () from /cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_22/lib/slc7_amd64_gcc700/pluginFWCoreServicesPlugins.so
+#3  0x00007f0b2aff48ff in std::execute_native_thread_routine (__p=0x7f0b150408b0) at ../../../../../libstdc++-v3/src/c++11/thread.cc:83
+#4  0x00007f0b2aa0aea5 in start_thread () from /lib64/libpthread.so.0
+#5  0x00007f0b2a733b0d in clone () from /lib64/libc.so.6
+Thread 1 (Thread 0x7f0b28df9480 (LWP 4343)):
+#0  0x00007f0b2a728ddd in poll () from /lib64/libc.so.6
+#1  0x00007f0b25d024f7 in full_read.constprop () from /cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_22/lib/slc7_amd64_gcc700/pluginFWCoreServicesPlugins.so
+#2  0x00007f0b25d02b8c in edm::service::InitRootHandlers::stacktraceFromThread() () from /cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_22/lib/slc7_amd64_gcc700/pluginFWCoreServicesPlugins.so
+#3  0x00007f0b25d03bf9 in sig_dostack_then_abort () from /cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_22/lib/slc7_amd64_gcc700/pluginFWCoreServicesPlugins.so
+#4  <signal handler called>
+#5  0x00007f0af362a764 in MCHistoryTools::init() () from /afs/cern.ch/work/m/mrkim/HZZ/220722_ReReco/CMSSW_10_2_22/lib/slc7_amd64_gcc700/libZZAnalysisAnalysisStep.so
+#6  0x00007f0af362ba4c in MCHistoryTools::genFinalState() () from /afs/cern.ch/work/m/mrkim/HZZ/220722_ReReco/CMSSW_10_2_22/lib/slc7_amd64_gcc700/libZZAnalysisAnalysisStep.so
+#7  0x00007f0aada37d45 in ZZ2l2qAnalyzer::analyze(edm::Event const&, edm::EventSetup const&) () from /afs/cern.ch/work/m/mrkim/HZZ/220722_ReReco/CMSSW_10_2_22/lib/slc7_amd64_gcc700/pluginZZAnalysisAnalysisStepTestNtupleFactories.so
+#8  0x00007f0b2d43323a in edm::EDAnalyzer::doEvent(edm::EventPrincipal const&, edm::EventSetup const&, edm::ActivityRegistry*, edm::ModuleCallingContext const*) () from /cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_22/lib/slc7_amd64_gcc700/libFWCoreFramework.so
+#9  0x00007f0b2d487b12 in edm::WorkerT<edm::EDAnalyzer>::implDo(edm::EventPrincipal const&, edm::EventSetup const&, edm::ModuleCallingContext const*) () from /cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_22/lib/slc7_amd64_gcc700/libFWCoreFramework.so
+#10 0x00007f0b2d41c19a in decltype ({parm#1}()) edm::convertException::wrap<bool edm::Worker::runModule<edm::OccurrenceTraits<edm::EventPrincipal, (edm::BranchActionType)1> >(edm::OccurrenceTraits<edm::EventPrincipal, (edm::BranchActionType)1>::MyPrincipal const&, edm::EventSetup const&, edm::StreamID, edm::ParentContext const&, edm::OccurrenceTraits<edm::EventPrincipal, (edm::BranchActionType)1>::Context const*)::{lambda()#1}>(bool edm::Worker::runModule<edm::OccurrenceTraits<edm::EventPrincipal, (edm::BranchActionType)1> >(edm::OccurrenceTraits<edm::EventPrincipal, (edm::BranchActionType)1>::MyPrincipal const&, edm::EventSetup const&, edm::StreamID, edm::ParentContext const&, edm::OccurrenceTraits<edm::EventPrincipal, (edm::BranchActionType)1>::Context const*)::{lambda()#1}) () from /cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_22/lib/slc7_amd64_gcc700/libFWCoreFramework.so
+#11 0x00007f0b2d41c35d in bool edm::Worker::runModule<edm::OccurrenceTraits<edm::EventPrincipal, (edm::BranchActionType)1> >(edm::OccurrenceTraits<edm::EventPrincipal, (edm::BranchActionType)1>::MyPrincipal const&, edm::EventSetup const&, edm::StreamID, edm::ParentContext const&, edm::OccurrenceTraits<edm::EventPrincipal, (edm::BranchActionType)1>::Context const*) () from /cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_22/lib/slc7_amd64_gcc700/libFWCoreFramework.so
+#12 0x00007f0b2d41da7b in std::__exception_ptr::exception_ptr edm::Worker::runModuleAfterAsyncPrefetch<edm::OccurrenceTraits<edm::EventPrincipal, (edm::BranchActionType)1> >(std::__exception_ptr::exception_ptr const*, edm::OccurrenceTraits<edm::EventPrincipal, (edm::BranchActionType)1>::MyPrincipal const&, edm::EventSetup const&, edm::StreamID, edm::ParentContext const&, edm::OccurrenceTraits<edm::EventPrincipal, (edm::BranchActionType)1>::Context const*) () from /cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_22/lib/slc7_amd64_gcc700/libFWCoreFramework.so
+#13 0x00007f0b2d41f165 in void edm::SerialTaskQueueChain::actionToRun<edm::Worker::RunModuleTask<edm::OccurrenceTraits<edm::EventPrincipal, (edm::BranchActionType)1> >::execute()::{lambda()#1}&>(edm::Worker::RunModuleTask<edm::OccurrenceTraits<edm::EventPrincipal, (edm::BranchActionType)1> >::execute()::{lambda()#1}&) () from /cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_22/lib/slc7_amd64_gcc700/libFWCoreFramework.so
+#14 0x00007f0b2d41f221 in edm::SerialTaskQueue::QueuedTask<void edm::SerialTaskQueueChain::push<edm::Worker::RunModuleTask<edm::OccurrenceTraits<edm::EventPrincipal, (edm::BranchActionType)1> >::execute()::{lambda()#1}&>(edm::Worker::RunModuleTask<edm::OccurrenceTraits<edm::EventPrincipal, (edm::BranchActionType)1> >::execute()::{lambda()#1}&)::{lambda()#1}>::execute() () from /cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_22/lib/slc7_amd64_gcc700/libFWCoreFramework.so
+#15 0x00007f0b2bd78466 in tbb::internal::custom_scheduler<tbb::internal::IntelSchedulerTraits>::local_wait_for_all (this=0x7f0b2774f200, parent=..., child=<optimized out>) at ../../src/tbb/custom_scheduler.h:509
+#16 0x00007f0b2d4e2eb1 in edm::EventProcessor::processLumis(std::shared_ptr<void> const&) () from /cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_22/lib/slc7_amd64_gcc700/libFWCoreFramework.so
+#17 0x00007f0b2d4ec20a in edm::EventProcessor::runToCompletion() () from /cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_22/lib/slc7_amd64_gcc700/libFWCoreFramework.so
+#18 0x000000000040eafb in main::{lambda()#1}::operator()() const ()
+#19 0x000000000040d2c2 in main ()
+
+Current Modules:
+
+Module: ZZ2l2qAnalyzer:PlotsZZ (crashed)
+
+A fatal system signal has occurred: segmentation violation
+Segmentation fault (core dumped)
+

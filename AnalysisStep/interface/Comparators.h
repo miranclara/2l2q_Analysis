@@ -21,7 +21,7 @@ namespace Comparators {
 
   const float ZmassValue = 91.1876;
 
-  enum ComparatorTypes {byBestZ1bestZ2 = 0, byBestKD=1, byBestKD_VH=2, byBestPsig=3, byMHWindow=4};
+  enum ComparatorTypes {byBestZ1bestZ2 = 0, byBestKD=1, byBestKD_VH=2, byBestPsig=3, byMHWindow=4, byBestZqq = 5};//changed
 
   struct BestCandComparator {
     const pat::CompositeCandidateCollection& candCollection;
@@ -34,6 +34,7 @@ namespace Comparators {
     virtual ~BestCandComparator() = default;
 
     // Helper function, implements the "legacy" Z1/Z2 selection logic
+
     bool bestZ1bestZ2(const pat::CompositeCandidate& cand_i, const pat::CompositeCandidate& cand_j){
 
       float mZ1_i = cand_i.daughter("Z1")->mass();
@@ -53,6 +54,28 @@ namespace Comparators {
       }      
       
     }
+
+
+
+    bool bestZ2bestZ1(const pat::CompositeCandidate& cand_i, const pat::CompositeCandidate& cand_j){
+      float mZ1_i = cand_i.daughter("Z1")->mass();
+      float mZ1_j = cand_j.daughter("Z1")->mass();
+      if ( fabs(mZ1_i-mZ1_j) < 1e-04 ){ // same Z1: choose the candidate with highest-pT Z2 leptons
+//      const reco::Candidate* Z2_i = cand_i.daughter("Z2");
+//      const reco::Candidate* Z2_j = cand_j.daughter("Z2");
+        double ptSumZ2_i =cand_i.daughter("Z1")->pt();
+        double ptSumZ2_j =cand_j.daughter("Z1")->pt();
+        // cout <<  "Comparator: compare Z2 pTs: " << ptSumZ2_i << " " << ptSumZ2_j << endl;
+         return ( ptSumZ2_i > ptSumZ2_j );
+      }
+      else { // choose the candidate with Z1 closest to nominal mass 
+        // cout << "Comparator: compare Z1 masses: " << mZ1_i << " " << mZ1_j << endl;
+        return ( fabs(mZ1_i-ZmassValue)<fabs(mZ1_j-ZmassValue) );
+      }
+
+    }//added  bool bestZ2bestZ1()
+
+
 
     // Sorting based on discriminants cannot distinguish between SF candidates with the same leptons and FSR,
     // but different pairing. We need to check for these cases.
@@ -130,7 +153,10 @@ namespace Comparators {
 	if (j_inMHWin&&!i_inMHWin) return false;
 	// If neither, or both candidate are in the mass window, use the old logic. Could choose by best psig as well.
 	return bestZ1bestZ2(cand_i,cand_j); //same 4 leptons, different pairing
-      }
+      }      
+      else if(theType==byBestZqq){
+       return bestZ2bestZ1(cand_i,cand_j);
+      }//added
 
       else {
 	abort();

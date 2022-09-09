@@ -284,11 +284,13 @@ MuFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       
       //--- Check selection cut. Being done here, flags are not available; but this way we
       //    avoid wasting time on rejected leptons.
+      cout<<" print the CUTS "<<cut(l)<<endl;
       if (!cut(l)) continue;
       
       //--- Embed flags (ie flags specified in the "flags" pset)
       for(CutSet<pat::Muon>::const_iterator flag = flags.begin(); flag != flags.end(); ++flag) {
          l.addUserFloat(flag->first,int((*(flag->second))(l)));
+         cout<<flag->first<<" flag test print"<<(*(flag->second))(l)<<endl;
       }
       
       result->push_back(l);

@@ -1,7 +1,7 @@
 #include <ZZAnalysis/AnalysisStep/interface/FinalStates.h>
 
 namespace {
-  const unsigned nFS = 29;
+  const unsigned nFS = 32;//changed
 }
 
 
@@ -36,16 +36,23 @@ std::string finalState(int iFS) {
 					"ZZOnShell", //26
 					"llTT",      //27
 					"TTTT"       //28
+					"EEQQ"       //29
+					"MMQQ"       //30
+					"TTQQ"       //30
   };
   return finalStates[iFS];			     	
 }
 
 
 std::string finalStateNiceName(int iFS) {
-  if (iFS<0||iFS>2) return finalState(iFS);
-  const std::string finalStates[3] = {"4mu", "4e", "2e2mu"};
-  
-  return finalStates[iFS];
+//  if (iFS<0||iFS>2) &&  ((iFS!=29) ||( iFS!=30)) return finalState(iFS);
+  if ((iFS<0||iFS>2) && (iFS!=29 || iFS!=30)) return finalState(iFS);//changed
+  int tempFS=0;
+  const std::string finalStates[5] = {"4mu", "4e", "2e2mu","2e2q","2mu2q"};
+ if(iFS>=0 && iFS<=2) tempFS=iFS;
+ if (iFS==29 || iFS==30 ) tempFS=iFS-29+3;
+//  return finalStates[iFS];
+  return finalStates[tempFS];//changed
 }
 
 

@@ -39,7 +39,8 @@ declareDefault("APPLY_K_NLOEW_ZZQQB", False, globals())
 
 #failed events
 declareDefault("SKIP_EMPTY_EVENTS", True, globals())
-declareDefault("FAILED_TREE_LEVEL", 0, globals())
+#declareDefault("FAILED_TREE_LEVEL", 0, globals())
+declareDefault("FAILED_TREE_LEVEL", True, globals())#changed(0->true)
 
 #ggF uncertainties for HTXS
 declareDefault("APPLY_QCD_GGF_UNCERT", False, globals() )
@@ -59,7 +60,7 @@ PyFilePath = os.environ['CMSSW_BASE'] + "/src/ZZAnalysis/AnalysisStep/test/"
 ### Standard sequence
 ### ----------------------------------------------------------------------
 
-execfile(PyFilePath + "MasterPy/ZZ4lAnalysis.py")
+execfile(PyFilePath + "MasterPy/ZZ2l2qAnalysis.py")
 
 
 ### ----------------------------------------------------------------------
@@ -73,16 +74,18 @@ process.maxEvents.input = -1
 ### Output root file (monitoring histograms)
 ### ----------------------------------------------------------------------
 process.TFileService=cms.Service('TFileService',
-                                fileName=cms.string('ZZ4lAnalysis.root')
+                                fileName=cms.string('ZZ2l2qAnalysis.root')
                                 )
 
 ### ----------------------------------------------------------------------
 ### Analyzers for Plots
 ### ----------------------------------------------------------------------
+print("ciao 1")
 
 # All events together
-process.PlotsZZ    = cms.EDAnalyzer("ZZ4lAnalyzer",
-                                    channel = cms.untracked.string('ZZ'),
+process.PlotsZZ    = cms.EDAnalyzer("ZZ2l2qAnalyzer",
+#                                    channel = cms.untracked.string('ZZ'),
+                                    channel = cms.untracked.string('aChannel'),#changed
                                     candCollection = cms.untracked.string('ZZCand'),
                                     isMC = cms.untracked.bool(IsMC),
                                     sampleType = cms.int32(SAMPLE_TYPE),
@@ -140,7 +143,8 @@ process.PlotsZZ    = cms.EDAnalyzer("ZZ4lAnalyzer",
 ### Analyzer for Trees
 ### ----------------------------------------------------------------------
 
-TreeSetup = cms.EDAnalyzer("HZZ4lNtupleMaker",
+print("ciao 2")
+TreeSetup = cms.EDAnalyzer("HZZ2l2qNtupleMaker",
                            channel = cms.untracked.string('aChannel'),
                            CandCollection = cms.untracked.string('ZZCand'),
                            fileName = cms.untracked.string('candTree'),
@@ -156,8 +160,8 @@ TreeSetup = cms.EDAnalyzer("HZZ4lNtupleMaker",
                            skipEmptyEvents = cms.bool(SKIP_EMPTY_EVENTS),
                            failedTreeLevel = cms.int32(FAILED_TREE_LEVEL),
                            sampleName = cms.string(SAMPLENAME),
-									GenXSEC = cms.double(GENXSEC),
-									GenBR = cms.double(GENBR),
+			   GenXSEC = cms.double(GENXSEC),
+			   GenBR = cms.double(GENBR),
 									
                            # MELA parameters
                            superMelaMass = cms.double(SUPERMELA_MASS),
@@ -174,7 +178,7 @@ TreeSetup = cms.EDAnalyzer("HZZ4lNtupleMaker",
                            Apply_K_NNLOQCD_ZZGG = cms.int32(APPLY_K_NNLOQCD_ZZGG),
                            Apply_K_NNLOQCD_ZZQQB = cms.bool(APPLY_K_NNLOQCD_ZZQQB),
                            Apply_K_NLOEW_ZZQQB = cms.bool(APPLY_K_NLOEW_ZZQQB),
-									Apply_QCD_GGF_UNCERT = cms.bool(APPLY_QCD_GGF_UNCERT),
+			   Apply_QCD_GGF_UNCERT = cms.bool(APPLY_QCD_GGF_UNCERT),
                            )
 
 ### Signal region
@@ -239,7 +243,9 @@ process.CRZLTreelooseEle.CandCollection = 'ZlCandlooseEle'
 ### ----------------------------------------------------------------------
 ### Z tree
 ### ----------------------------------------------------------------------
-process.ZTree = cms.EDAnalyzer("ZNtupleMaker",
+
+print("ciao 3")
+process.ZTree = cms.EDAnalyzer("ZNtupleMaker_2l2q",
                                channel = cms.untracked.string('ZZ'),
                                CandCollection = cms.untracked.string('ZCand'),
                                fileName = cms.untracked.string('candTree'),
@@ -297,7 +303,8 @@ process.dumpUserData =  cms.EDAnalyzer("dumpUserData",
     jetSrc = cms.InputTag("cleanJets"),
 )
 
-if (PROCESS_CR or not IsMC):
+#if (PROCESS_CR or not IsMC):
+if (PROCESS_CR):
     process.CRPath = cms.Path(process.CR)
     if (not IsMC):
         process.dump = cms.Path(process.ZZFiltered + process.ZZSelection + process.dumpUserData)
@@ -306,6 +313,8 @@ if (PROCESS_CR or not IsMC):
 else:
 #    process.CRPath = cms.Path(process.CRZl) #still needed by the plotter
     process.trees = cms.EndPath(process.ZZTree)
+
+print("ciao 4")
 
 process.plots = cms.EndPath(process.PlotsZZ)
 

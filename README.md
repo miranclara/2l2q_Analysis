@@ -1,4 +1,4 @@
-ZZAnalysis
+ZZ2l2qAnalysis
 ==========
 
 This is the CJLST framework for analysis of full Run 2 data for Legacy paper.

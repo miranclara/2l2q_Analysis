@@ -91,13 +91,14 @@ process.bareZZCandlooseEle= cms.EDProducer("CandViewShallowCloneCombiner",
 )
 
 
-process.ZZCandlooseEle = cms.EDProducer("ZZCandidateFiller",
+#process.ZZCandlooseEle = cms.EDProducer("ZZCandidateFiller",
+process.ZZCandlooseEle = cms.EDProducer("ZZjjCandidateFiller",//changed, clara
     src = cms.InputTag("bareZZCandlooseEle"),
     sampleType = cms.int32(SAMPLE_TYPE),
     setup = cms.int32(LEPTON_SETUP),
     superMelaMass = cms.double(SUPERMELA_MASS),
     isMC = cms.bool(IsMC),
-    bestCandAmong = cms.PSet(isBestCand = cms.string(BESTCAND_AMONG)),
+    bestCandAmong = cms.PSet(isBestCand = cms.string(BESTCAND_AMONG)),//?BESTCAND2_AMONG
     bestCandComparator = cms.string(BESTCANDCOMPARATOR),
     ZRolesByMass = cms.bool(True),
     doKinFit = cms.bool(KINREFIT),

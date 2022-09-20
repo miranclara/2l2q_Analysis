@@ -50,7 +50,9 @@ process.source.fileNames = cms.untracked.vstring(
 #'/store/mc/RunIIAutumn18MiniAOD/VBF_HToZZTo4L_M125_13TeV_powheg2_JHUGenV7011_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/90000/96A5F68D-DCB8-3D4E-8615-919D86D1534F.root'
 #'/store/mc/RunIISummer16MiniAODv2/GluGluHToZZTo2L2Q_M125_13TeV_powheg2_JHUGenV709_pythia8/MINIAODSIM/PUMoriond17_HIG083_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/30000/009B7A66-7EDA-E711-ACCF-1CB72C0A3DBD.root'        
 #'/store/mc/RunIIAutumn18MiniAOD/GluGluHToZZTo2L2Q_M750_13TeV_powheg2_JHUGenV7011_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/120000/1E662725-80FD-EE43-A21E-E06C21678ADA.root'#Not opened
-'/store/mc/RunIIAutumn18MiniAOD/GluGluHToZZTo2L2Q_M750_13TeV_powheg2_JHUGenV7011_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/120000/109687AA-2A9A-7B4B-A3CD-7122B9ABB48B.root', 
+#'/store/mc/RunIIAutumn18MiniAOD/GluGluHToZZTo2L2Q_M750_13TeV_powheg2_JHUGenV7011_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/120000/109687AA-2A9A-7B4B-A3CD-7122B9ABB48B.root', 
+'/store/mc/RunIIAutumn18MiniAOD/GluGluHToZZTo2L2Q_M1000_13TeV_powheg2_JHUGenV7011_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/80000/00F5D133-94F8-6244-A2B9-23A807002E90.root'
+#'/store/mc/RunIIAutumn18MiniAOD/GluGluHToZZTo2L2Q_M1000_13TeV_powheg2_JHUGenV7011_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/80000/2E275EA6-5B3F-7B40-AD5C-DE209A891F29.root'
 ###Run2018A-ReReco-v2                                                                                                                 
         #'/store/data/Run2018A/DoubleMuon/MINIAOD/17Sep2018-v2/120000/39DE1F78-583A-1948-8E09-E47E33DCCBED.root'                                      
 
@@ -61,7 +63,7 @@ process.source.fileNames = cms.untracked.vstring(
 #process.calibratedPatElectrons.isSynchronization = cms.bool(True) #not needed anymore since new EGamma smearing is event deterministic
 process.calibratedMuons.isSynchronization = cms.bool(True)#added
 
-process.maxEvents.input = -1 #500
+process.maxEvents.input = -1 
 #process.source.skipEvents = cms.untracked.uint32(5750)
 
 # Silence output

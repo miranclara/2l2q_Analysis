@@ -44,8 +44,8 @@ float userdatahelpers::getUserFloat(const reco::Candidate* c, const char* name){
     return ele->userFloat(name);
   } else if (const pat::Photon* ele = dynamic_cast<const pat::Photon*>(c)) {
     return ele->userFloat(name);
-  } else if (const pat::Jet* jet = dynamic_cast<const pat::Jet*>(c)) {
-    return jet->userFloat(name);
+  } else if (const pat::Jet* jet = dynamic_cast<const pat::Jet*>(c)) {//added,clara
+    return jet->userFloat(name);//added,clara
   } else if (const pat::CompositeCandidate* cc = dynamic_cast<const pat::CompositeCandidate*>(c)) {
     return cc->userFloat(name);
   }
@@ -62,8 +62,8 @@ int userdatahelpers::hasUserFloat(const reco::Candidate* c, const char* name){
     return ele->hasUserFloat(name);
   } else if (const pat::Photon* ele = dynamic_cast<const pat::Photon*>(c)) {
     return ele->hasUserFloat(name);
-  } else if (const pat::Jet* jet = dynamic_cast<const pat::Jet*>(c)) {
-    return jet->userFloat(name);
+  } else if (const pat::Jet* jet = dynamic_cast<const pat::Jet*>(c)) {//added,clara
+    return jet->userFloat(name);//added,clara
   } else if (const pat::CompositeCandidate* cc = dynamic_cast<const pat::CompositeCandidate*>(c)) {
     return cc->hasUserFloat(name);
   }

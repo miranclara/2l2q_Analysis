@@ -95,10 +95,11 @@ git clone https://github.com/JHUGen/JHUGenMELA.git JHUGenMELA
 #download MCFM lib (cannot be done in BuildFile.xml any longer)
 $CMSSW_BASE/src/JHUGenMELA/MELA/data/retrieve.csh $SCRAM_ARCH mcfm_707
 
-#kinematic refitting
+#kinematic refitting:4L
 #git clone https://github.com/mhl0116/KinZfitter-1.git KinZfitter
 #(cd KinZfitter ; git checkout -b from-27daebb 27daebb)
 
+#kinematic refitting:2l2q
 git clone  -b 2l2q_fullrun2 https://github.com/alokekumardas/KinZfitter.git  KinZfitter
 
 

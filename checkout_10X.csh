@@ -43,7 +43,8 @@ git cms-merge-topic cms-met:METFixEE2017_949_v2_backport_to_102X
 #### Please do not add any custom (non-CMSSW) package before this line ####
 #ZZAnalysis
 git clone https://github.com/miranclara/2l2q_Analysis.git ZZAnalysis
-(cd ZZAnalysis; git checkout working_branch_Rereco)
+(cd ZZAnalysis; git checkout main)
+
 #git clone https://github.com/CJLST/ZZAnalysis.git ZZAnalysis
 #(cd ZZAnalysis; git checkout Run2_CutBased_BTag16)
 
@@ -94,10 +95,6 @@ git clone https://github.com/JHUGen/JHUGenMELA.git JHUGenMELA
 
 #download MCFM lib (cannot be done in BuildFile.xml any longer)
 $CMSSW_BASE/src/JHUGenMELA/MELA/data/retrieve.csh $SCRAM_ARCH mcfm_707
-
-#kinematic refitting:4l
-#git clone https://github.com/mhl0116/KinZfitter-1.git KinZfitter
-#(cd KinZfitter ; git checkout -b from-27daebb 27daebb)
 
 #kinematic refitting:2l2q
 git clone  -b 2l2q_fullrun2 https://github.com/alokekumardas/KinZfitter.git  KinZfitter

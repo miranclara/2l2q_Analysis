@@ -80,11 +80,11 @@ echo 'cmsRun done at: ' $(date) with exit status: ${cmsRunStatus+0}
 gzip log.txt
 
 export ROOT_HIST=0
-if [ -s ZZ4lAnalysis.root ]; then
- root -q -b '${CMSSW_BASE}/src/ZZAnalysis/AnalysisStep/test/prod/rootFileIntegrity.r("ZZ4lAnalysis.root")'
+if [ -s ZZ2l2qAnalysis.root ]; then
+ root -q -b '${CMSSW_BASE}/src/ZZAnalysis/AnalysisStep/test/prod/rootFileIntegrity.r("ZZ2l2qAnalysis.root")'
 else
  echo moving empty file
- mv ZZ4lAnalysis.root ZZ4lAnalysis.root.empty
+ mv ZZ2l2qAnalysis.root ZZ2l2qAnalysis.root.empty
 fi
 
 #delete mela stuff and $USER.cc
@@ -95,7 +95,7 @@ echo '...done at' $(date)
 
 #note cping back is handled automatically by condor
 if $runninglocally; then
-  cp ZZ4lAnalysis.root* *.txt *.gz $SUBMIT_DIR
+  cp ZZ2l2qAnalysis.root* *.txt *.gz $SUBMIT_DIR
 fi
 
 exit $cmsRunStatus

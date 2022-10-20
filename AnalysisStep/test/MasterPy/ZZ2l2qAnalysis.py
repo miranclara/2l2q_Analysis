@@ -739,6 +739,7 @@ process.ZjjCand = cms.EDProducer("ZCandidateFiller",#changed
 ### ----------------------------------------------------------------------
 
 #FOURGOODLEPTONS    =  ("userFloat('d0.GoodLeptons') && userFloat('d1.GoodLeptons')" +#changed
+#FOURGOODLEPTONS selects 2 leptons.
 FOURGOODLEPTONS    =  ("userFloat('d1.GoodLeptons')"+# diff: d0,d1
 #                       "&& userFloat('d0.worstEleIso') <" + str(ELEISOCUT) +#changed
                        "&& userFloat('d1.worstEleIso') <" + str(ELEISOCUT) +
@@ -917,7 +918,7 @@ process.ZZCand = cms.EDProducer("ZZjjCandidateFiller",#changed
         SR = cms.string(SR),
         FullSel70 = cms.string(SR), #Obsolete, use "SR"
 #        FullSel = cms.string(FULLSEL),
-        FullSel = cms.string(SR2),#changed, SR1->SR2:clara
+        FullSel = cms.string(SR),
     ),
     recoProbabilities = cms.vstring(),
     #These are actually no longer needed after we dropped the Legacy FSR algorithm

@@ -11,6 +11,7 @@ Please use **CMSSW_10_2_22**.
 
 Download and execute the setup script:
 ```
+
 wget -O ${TMPDIR}/checkout_10X.csh https://raw.githubusercontent.com/miranclara/2l2q_Analysis/main/checkout_10X.csh
 cd $CMSSW_BASE/src
 cmsenv
@@ -38,7 +39,9 @@ Once you are ready to commit
 git pull
 git add [files to be added]
 git commit -m ["commit message"] [files to be added]
+
 git push origin main
+
 ```
 
 Otherwise you can make a fork of the repository, develop therein, and make a pull request in the same way as for CMSSW.

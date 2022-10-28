@@ -12,7 +12,7 @@ Please use **CMSSW_10_2_22**.
 Download and execute the setup script:
 ```
 
-wget -O ${TMPDIR}/checkout_10X.csh https://raw.githubusercontent.com/miranclara/2l2q_Analysis/main/checkout_10X.csh
+wget -O ${TMPDIR}/checkout_10X.csh https://raw.githubusercontent.com/miranclara/2l2q_Analysis/new-rereco/checkout_10X.csh
 cd $CMSSW_BASE/src
 cmsenv
 chmod u+x ${TMPDIR}/checkout_10X.csh

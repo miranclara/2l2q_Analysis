@@ -133,7 +133,7 @@ ZZjjCandidateFiller::ZZjjCandidateFiller(const edm::ParameterSet& iConfig) :
   sampleType(iConfig.getParameter<int>("sampleType")),
   setup(iConfig.getParameter<int>("setup")),
   superMelaMass(iConfig.getParameter<double>("superMelaMass")),
-  mela(0),
+//  mela(0),
   recoMElist(iConfig.getParameter<std::vector<std::string>>("recoProbabilities")),
   embedDaughterFloats(iConfig.getUntrackedParameter<bool>("embedDaughterFloats", true)),
   //ZRolesByMass(iConfig.getParameter<bool>("ZRolesByMass")),
@@ -145,13 +145,13 @@ ZZjjCandidateFiller::ZZjjCandidateFiller(const edm::ParameterSet& iConfig) :
   corrSigmaEle(0),
   kinZfitter(0)
 {
-  mela = new Mela(SetupToSqrts(setup), superMelaMass, TVar::SILENT); //FIXME //aloke
-  mela->setCandidateDecayMode(TVar::CandidateDecay_ZZ);
+  //mela = new Mela(SetupToSqrts(setup), superMelaMass, TVar::SILENT); //FIXME //aloke
+  //mela->setCandidateDecayMode(TVar::CandidateDecay_ZZ);
   produces<pat::CompositeCandidateCollection>();
   rhoForMuToken = consumes<double>(LeptonIsoHelper::getMuRhoTag(sampleType, setup));
   rhoForEleToken = consumes<double>(LeptonIsoHelper::getEleRhoTag(sampleType, setup));
 
-  //buildMELA(); //FIXME aloke
+  buildMELA(); 
 
   jetToken = consumes<edm::View<pat::Jet> >(edm::InputTag("cleanJets"));
   metToken = consumes<pat::METCollection>(edm::InputTag("slimmedMETs"));
@@ -181,7 +181,7 @@ ZZjjCandidateFiller::ZZjjCandidateFiller(const edm::ParameterSet& iConfig) :
 
   string cmp=iConfig.getParameter<string>("bestCandComparator");
   if      (cmp=="byBestZ1bestZ2") bestCandType=Comparators::byBestZ1bestZ2;
-  else if (cmp=="byBestZqq")      bestCandType=Comparators::byBestZqq;//changed from Zqq to Zq
+  else if (cmp=="byBestZqq")      bestCandType=Comparators::byBestZqq;
   else if (cmp=="byBestKD")       bestCandType=Comparators::byBestKD;
   else if (cmp=="byBestKD_VH")    bestCandType=Comparators::byBestKD_VH;
   else if (cmp=="byBestPsig")    bestCandType=Comparators::byBestPsig;
@@ -276,7 +276,7 @@ void ZZjjCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSe
       goodisoleptonPtrs.push_back(lepPtr);
     }
   }
-  cout<<"good lep size = "<<goodisoleptonPtrs.size()<<endl; 
+//  cout<<"good lep size = "<<goodisoleptonPtrs.size()<<endl; 
   //cout <<"softleptoncoll->size() "<<softleptoncoll->size()<<endl; //test aloke FIXME
 
   // Get Z Candidates
@@ -633,7 +633,7 @@ void ZZjjCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     /***** BEGIN MELA *****/
     /**********************/
     /**********************/
-
+/*
     // Lepton TLorentzVectors, including FSR
     SimpleParticleCollection_t daughters;
 //    daughters.push_back(SimpleParticle_t(47, TLorentzVector(p11.x(), p11.y(), p11.z(), p11.t())));  //47 in  2l2q branch
@@ -765,8 +765,176 @@ void ZZjjCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSe
           );
         associated.push_back(SimpleParticle_t(0, jet));
       }
-      /*for (unsigned int ilep=0; ilep<associatedLeptons.size(); ilep++) associated.push_back(associatedLeptons.at(ilep));
-      mela->setInputEvent(&daughters, &associated, 0, 0);
+  //    for (unsigned int ilep=0; ilep<associatedLeptons.size(); ilep++) associated.push_back(associatedLeptons.at(ilep));
+    //  mela->setInputEvent(&daughters, &associated, 0, 0);
+    //  for (unsigned int ijet = 0; ijet<cleanedJetsPt30Jec.size(); ijet++){
+      //  TLorentzVector jet(
+      //    cleanedJetsPt30Jec[ijet]->p4().x()*jec_ratio.at(ijet),
+      //    cleanedJetsPt30Jec[ijet]->p4().y()*jec_ratio.at(ijet),
+      //    cleanedJetsPt30Jec[ijet]->p4().z()*jec_ratio.at(ijet),
+     //     cleanedJetsPt30Jec[ijet]->p4().t()*jec_ratio.at(ijet)
+     //     );
+    //    SimpleParticleCollection_t stableTopDaughters; // Just a collection with one jet as the top
+     //   stableTopDaughters.push_back(SimpleParticle_t(0, jet));
+    //    mela->appendTopCandidate(&stableTopDaughters);
+   //   }
+ 
+     mela->setInputEvent(&daughters, &associated, 0, 0); nCandidates++;
+    }
+    computeMELABranches();
+    // IMPORTANT: Reset input events at the end all calculations!
+    mela->resetInputEvent();
+*/
+    /********************/
+    /********************/
+    /***** END MELA *****/
+    /********************/
+    /********************/
+
+    //----------------------------------------------------------------------
+    //--- Embed angular information and probabilities to build discriminants
+    float costheta1=0, costheta2=0, phi=0, costhetastar=0, phistar1=0;
+    float xi=0, xistar=0;
+
+    // detaJJ, Mjj and Fisher. These are per-event variables in the SR, but not necessarily in the CR as we clean jets also 
+    // for loose-but-not-tight leptons.
+    
+    float DiJetMass  = -99;
+    float DiJetDEta  = -99;
+    float DiJetFisher  = -99;
+    float ZZjjPt     = -99;
+
+    unsigned int nCandidates=0; // Should equal 3 after the loop below
+    for (int jecnum = 0; jecnum < 3; jecnum++){
+
+      // Lepton TLorentzVectors, including FSR 
+      SimpleParticleCollection_t daughters;
+      
+       // multiplier: +1 means JEC up, -1 means JEC down
+      double jecnum_multiplier = 0;
+      if (jecnum==1) jecnum_multiplier = 1.;
+      else if (jecnum==2) jecnum_multiplier = -1.;
+
+       // JEC corrected masses
+      float newZ1Mass = 0.;
+      float newZZMass = 0.;
+      float jratio=0., jratio1=0., jratio2=0.;
+      const reco::Candidate* z = myCand.daughter(0);
+      if (isMerged) {
+	const pat::Jet* thejet = dynamic_cast <const pat::Jet*> (z->masterClone().get());
+	jecUnc.setJetEta(thejet->eta());
+	jecUnc.setJetPt(thejet->pt());
+	float jec_unc = jecUnc.getUncertainty(true);
+        jratio = 1. + jecnum_multiplier * jec_unc;
+	jecUnc.setJetEta(Z1J1->eta());
+	jecUnc.setJetPt(Z1J1->pt());
+	float jec_unc1 = jecUnc.getUncertainty(true);
+	jratio1 = 1. + jecnum_multiplier * jec_unc1;
+	jecUnc.setJetEta(Z1J2->eta());
+	jecUnc.setJetPt(Z1J2->pt());
+	float jec_unc2 = jecUnc.getUncertainty(true);
+        jratio2 = 1. + jecnum_multiplier * jec_unc2;
+	newZ1Mass = jratio*myCand.userFloat("d0.ak8PFJetsCHSCorrPrunedMass");
+	newZZMass = (jratio*z->p4() + myCand.daughter(1)->p4()).mass();
+	
+      } else {	  
+	const reco::Candidate* d1 = z->daughter(0);
+	const pat::Jet* thejet1 = dynamic_cast <const pat::Jet*> (d1->masterClone().get());
+	float jec_unc1 = thejet1->userFloat("jes_unc");
+	jratio1 = 1. + jecnum_multiplier * jec_unc1;
+	const reco::Candidate* d2 = z->daughter(1);
+	const pat::Jet* thejet2 = dynamic_cast <const pat::Jet*> (d2->masterClone().get());
+	float jec_unc2 = thejet2->userFloat("jes_unc");
+	jratio2 = 1. + jecnum_multiplier * jec_unc2;
+	newZ1Mass = (jratio1*d1->p4() + jratio2*d2->p4()).mass();
+	newZZMass = (jratio1*d1->p4() + jratio2*d2->p4() + myCand.daughter(1)->p4()).mass();
+      }
+      if (jecnum == 1) {
+	myCand.addUserFloat("Z1Mass_JecUp", newZ1Mass);
+	myCand.addUserFloat("ZZMass_JecUp", newZZMass);
+      } else if (jecnum == 2) {
+	myCand.addUserFloat("Z1Mass_JecDown", newZ1Mass);
+	myCand.addUserFloat("ZZMass_JecDown", newZZMass);
+      } 
+
+      daughters.push_back(SimpleParticle_t(0, TLorentzVector(p11.x()*jratio1, p11.y()*jratio1, p11.z()*jratio1, p11.t()*jratio1)));
+      daughters.push_back(SimpleParticle_t(0, TLorentzVector(p12.x()*jratio2, p12.y()*jratio2, p12.z()*jratio2, p12.t()*jratio2)));
+      daughters.push_back(SimpleParticle_t(id21, TLorentzVector(p21.x(), p21.y(), p21.z(), p21.t())));
+      daughters.push_back(SimpleParticle_t(id22, TLorentzVector(p22.x(), p22.y(), p22.z(), p22.t())));
+      
+      //--- Compute angles, better done here
+      if (jecnum == 0) {
+     		TUtil::computeAngles(
+      		costhetastar, costheta1, costheta2, phi, phistar1,
+      		daughters.at(0).second, daughters.at(0).first,
+      		daughters.at(1).second, daughters.at(1).first,
+      		daughters.at(2).second, daughters.at(2).first,
+      		daughters.at(3).second, daughters.at(3).first
+    		);
+	//--- compute higgs azimuthal angles, xi
+	TLorentzVector Z14vec = daughters.at(0).second + daughters.at(1).second;
+	TLorentzVector higgs = Z14vec + daughters.at(2).second + daughters.at(3).second;
+	TVector3 Xaxis(1, 0, 0);
+	xi = higgs.Phi();
+	// boost Z1 into rest frame of higgs
+	// xistar is the angle between Z decay plane and x-axis 
+	Z14vec.Boost(-higgs.BoostVector());
+ 	xistar = Z14vec.Phi();
+      }
+      
+      SimpleParticleCollection_t associated;
+      
+      vector<const pat::Jet*> cleanedJetsPt30Jec;
+      vector<float> jec_ratio;
+    
+      // MELA variables
+      for (edm::View<pat::Jet>::const_iterator jet = CleanJets->begin(); jet != CleanJets->end(); ++jet){
+        // calculate JEC uncertainty up/down
+        float jec_unc = jet->userFloat("jes_unc");
+        float ratio = 1. + jecnum_multiplier * jec_unc;
+        float newPt = jet->pt() * ratio;
+        // apply pt>30GeV cut
+        if (newPt<=30.0) continue;
+        // additional jets cleaning 
+        if (!jetCleaner::isGood(myCand, *jet)) continue;
+        // remove jets belonging to the candidate
+        bool belongs = false;
+        if (isMerged) {
+          for (int dauIdx=0; dauIdx<2; ++dauIdx) {       
+            const reco::Candidate* z = myCand.daughter(1);
+            const reco::Candidate* d = z->daughter(dauIdx);
+            double dR = ROOT::Math::VectorUtil::DeltaR(jet->p4(), d->momentum());
+            if (dR < 0.4) belongs = true;
+          }
+          const reco::Candidate* z2 = myCand.daughter(0);
+          double dR2 = ROOT::Math::VectorUtil::DeltaR(jet->p4(), z2->momentum());
+          // cout << "signal merged jet pt = " << z2->pt() << " eta = " << z2->eta() << std::endl;
+          if (dR2 < 0.8) belongs = true;
+        } else {
+          for (int theCand=0; theCand<2; ++theCand) {
+            for (int dauIdx=0; dauIdx<2; ++dauIdx) {
+              const reco::Candidate* z = myCand.daughter(theCand);
+              const reco::Candidate* d = z->daughter(dauIdx);
+              double dR = ROOT::Math::VectorUtil::DeltaR(jet->p4(), d->momentum());
+              // if (theCand == 0) cout << "resolved merged jet pt = " << d->pt() << " eta = " << d->eta() << std::endl;
+              if (dR < 0.4) belongs = true;
+            }
+          }
+        }
+        if (belongs) continue;
+        // store jets and up/down ratio
+        // cout << "other jet pt = " << jet->pt() << " eta = " << jet->eta() << std::endl;
+        cleanedJetsPt30Jec.push_back(&*jet);
+        jec_ratio.push_back(ratio);
+      }
+      if (jecnum==0 && cleanedJetsPt30Jec.size()>1){
+        const pat::Jet& jet1 = *(cleanedJetsPt30Jec.at(0));
+        const pat::Jet& jet2 = *(cleanedJetsPt30Jec.at(1));
+        DiJetDEta = jet1.eta()-jet2.eta();
+        DiJetMass = (jet1.p4()+jet2.p4()).M();
+        DiJetFisher = fisher(DiJetMass, DiJetDEta);
+        ZZjjPt = (Z1Lm->p4()+Z1Lp->p4()+Z2Lm->p4()+Z2Lp->p4()+jet1.p4()+jet2.p4()).pt();
+      }
       for (unsigned int ijet = 0; ijet<cleanedJetsPt30Jec.size(); ijet++){
         TLorentzVector jet(
           cleanedJetsPt30Jec[ijet]->p4().x()*jec_ratio.at(ijet),
@@ -774,22 +942,209 @@ void ZZjjCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSe
           cleanedJetsPt30Jec[ijet]->p4().z()*jec_ratio.at(ijet),
           cleanedJetsPt30Jec[ijet]->p4().t()*jec_ratio.at(ijet)
           );
-        SimpleParticleCollection_t stableTopDaughters; // Just a collection with one jet as the top
-        stableTopDaughters.push_back(SimpleParticle_t(0, jet));
-        mela->appendTopCandidate(&stableTopDaughters);
-      }*/
- 
-     mela->setInputEvent(&daughters, &associated, 0, 0); nCandidates++;
-    }
-    computeMELABranches();
-    // IMPORTANT: Reset input events at the end all calculations!
-    mela->resetInputEvent();
+        associated.push_back(SimpleParticle_t(0, jet));
+      }
+  //   for (unsigned int ilep=0; ilep<associatedLeptons.size(); ilep++) associated.push_back(associatedLeptons.at(ilep));
+      mela->setInputEvent(&daughters, &associated, 0, 0); 
+/*     
+      for (unsigned int ijet = 0; ijet<cleanedJetsPt30Jec.size(); ijet++){
+        TLorentzVector jet(
+          cleanedJetsPt30Jec[ijet]->p4().x()*jec_ratio.at(ijet),
+          cleanedJetsPt30Jec[ijet]->p4().y()*jec_ratio.at(ijet),
+          cleanedJetsPt30Jec[ijet]->p4().z()*jec_ratio.at(ijet),
+          cleanedJetsPt30Jec[ijet]->p4().t()*jec_ratio.at(ijet)
+          );
 
-    /********************/
-    /********************/
-    /***** END MELA *****/
-    /********************/
-    /********************/
+          SimpleParticleCollection_t stableTopDaughters; // Just a collection with one jet as the top
+          stableTopDaughters.push_back(SimpleParticle_t(0, jet));
+          mela->appendTopCandidate(&stableTopDaughters);
+      }
+*/
+     nCandidates++;
+    }
+
+ computeMELABranches();
+ // IMPORTANT: Reset input events at the end all calculations!
+ mela->resetInputEvent();
+ /********************/
+ /********************/
+ /***** END MELA *****/
+ /********************/
+ /********************/
+
+
+
+//added by aloke from 2l2q_80X branch
+/*
+    mela->setCurrentCandidateFromIndex(0);
+
+    // float p0plus_VAJHU=0;
+    // mela->setProcess(TVar::HSMHiggs, TVar::JHUGen, TVar::ZZGG);
+    // mela->computeP(p0plus_VAJHU, true);
+    float p0minus_VAJHU=0;
+    mela->setProcess(TVar::H0minus, TVar::JHUGen, TVar::ZZGG);
+    mela->computeP(p0minus_VAJHU, true);
+    float p0hplus_VAJHU=0;
+    mela->setProcess(TVar::H0hplus, TVar::JHUGen, TVar::ZZGG);
+    mela->computeP(p0hplus_VAJHU, true);
+    // float p2bplus_VAJHU=0;
+    // mela->setProcess(TVar::H2_g5, TVar::JHUGen, TVar::ZZGG);
+    // mela->computeP(p2bplus_VAJHU, true);
+    float p2_VAJHU=0;
+    mela->setProcess(TVar::H2_g1g5, TVar::JHUGen, TVar::ZZGG);
+    mela->computeP(p2_VAJHU, true);
+
+    // float pqqZJJ_VAMCFM=0;
+    // mela->setProcess(TVar::bkgZJets, TVar::MCFM, TVar::JJQCD);
+    // mela->computeP(pqqZJJ_VAMCFM, true);
+    float bkg_VAMCFM=0;
+    mela->setProcess(TVar::bkgZZ, TVar::MCFM, TVar::ZZQQB);
+    mela->computeP(bkg_VAMCFM, true);
+    float ggzz_VAMCFM=0;
+    mela->setProcess(TVar::bkgZZ, TVar::MCFM, TVar::ZZGG);
+    mela->computeP(ggzz_VAMCFM, true);
+    // float p0plus_VAMCFM=0;
+    // mela->setProcess(TVar::HSMHiggs, TVar::MCFM, TVar::ZZGG);
+    // mela->computeP(p0plus_VAMCFM, true);
+    float ggzz_p0plus_VAMCFM=0;
+    mela->setProcess(TVar::bkgZZ_SMHiggs, TVar::MCFM, TVar::ZZGG);
+    mela->computeP(ggzz_p0plus_VAMCFM, true);
+    float Dgg10_VAMCFM=0;
+    mela->computeD_gg(TVar::MCFM, TVar::D_gg10, Dgg10_VAMCFM);
+
+    float pvbf_VAJHU_highestPTJets=-1;
+    float phjj_VAJHU_highestPTJets=-1;
+    float pvbf_VAJHU_highestPTJets_up=-1;
+    float phjj_VAJHU_highestPTJets_up=-1;
+    float pvbf_VAJHU_highestPTJets_dn=-1;
+    float phjj_VAJHU_highestPTJets_dn=-1;
+    float pvbs_VAMCFM_highestPTJets=-1;
+    float pzzjj_VAMCFM_highestPTJets=-1;
+    float pvbs_VAMCFM_highestPTJets_up=-1;
+    float pzzjj_VAMCFM_highestPTJets_up=-1;
+    float pvbs_VAMCFM_highestPTJets_dn=-1;
+    float pzzjj_VAMCFM_highestPTJets_dn=-1;
+    float pqqZJJ_VAMCFM=-1;
+    float p0plus_VAJHU=-1;
+    float pqqZJJ_VAMCFM_up=-1;
+    float p0plus_VAJHU_up=-1;
+    float pqqZJJ_VAMCFM_dn=-1;
+    float p0plus_VAJHU_dn=-1;
+    float p0plus_VAMCFM=-1;
+    float p2bplus_VAJHU=-1;
+    float p0plus_VAMCFM_up=-1;
+    float p2bplus_VAJHU_up=-1;
+    float p0plus_VAMCFM_dn=-1;
+    float p2bplus_VAJHU_dn=-1;
+    
+    // Do these loops at the end to avoid switching particles off first and then on again
+    for (unsigned int jecnum=0; jecnum<nCandidates; jecnum++){
+      mela->setCurrentCandidateFromIndex(jecnum);
+      MELACandidate* melaCand = mela->getCurrentCandidate();
+
+      if (melaCand!=0){
+        unsigned int nGoodJets=melaCand->getNAssociatedJets();
+        bool hasAtLeastOneJet = (nGoodJets>0);
+        //bool hasAtLeastTwoJets = (nGoodJets>1);
+	float pqqZJJ_VAMCFM_temp=-1;
+	float p0plus_VAJHU_temp=-1;
+	float p0plus_VAMCFM_temp=-1;
+	float p2bplus_VAJHU_temp=-1;
+        mela->setProcess(TVar::HSMHiggs, TVar::JHUGen, TVar::ZZGG);
+	mela->computeP(p0plus_VAJHU_temp, true);
+        mela->setProcess(TVar::H2_g5, TVar::JHUGen, TVar::ZZGG);
+	mela->computeP(p2bplus_VAJHU_temp, true);
+        mela->setProcess(TVar::bkgZJets, TVar::MCFM, TVar::JJQCD);
+	mela->computeP(pqqZJJ_VAMCFM_temp, true);
+        mela->setProcess(TVar::HSMHiggs, TVar::MCFM, TVar::ZZGG);
+	mela->computeP(p0plus_VAMCFM_temp, true);
+
+        if (hasAtLeastOneJet){
+          float phjj_VAJHU_highestPTJets_temp = -1;
+          float pvbf_VAJHU_highestPTJets_temp = -1;
+          float pzzjj_VAMCFM_highestPTJets_temp = -1;
+          float pvbs_VAMCFM_highestPTJets_temp = -1;
+      
+          for (unsigned int firstjet = 0; firstjet < nGoodJets; firstjet++){
+            for (unsigned int secondjet = 1; secondjet < nGoodJets; secondjet++){
+              if (secondjet<=firstjet) continue;
+              for (unsigned int disableJet=0; disableJet<nGoodJets; disableJet++){
+                bool flag=false;
+                if (disableJet==firstjet || disableJet==secondjet) flag=true;
+                melaCand->getAssociatedJet(disableJet)->setSelected(flag);
+              }
+
+              float pvbf_temp = -1;
+              mela->setProcess(TVar::HSMHiggs, TVar::JHUGen, TVar::JJVBF);
+              mela->computeProdP(pvbf_temp, true);
+              float phjj_temp = -1;
+              mela->setProcess(TVar::HSMHiggs, TVar::JHUGen, TVar::JJQCD);
+              mela->computeProdP(phjj_temp, true);
+              float pvbs_temp = -1;
+              mela->setProcess(TVar::bkgZZ, TVar::MCFM, TVar::JJEW);
+              mela->computeProdP(pvbs_temp, true);
+              float pzzjj_temp = -1;
+              mela->setProcess(TVar::bkgZZ, TVar::MCFM, TVar::JJQCD);
+              mela->computeProdP(pzzjj_temp, true);
+            
+              if (firstjet == 0 && secondjet == 1){
+                phjj_VAJHU_highestPTJets_temp = phjj_temp;
+                pvbf_VAJHU_highestPTJets_temp = pvbf_temp;
+                pzzjj_VAMCFM_highestPTJets_temp = pzzjj_temp;
+                pvbs_VAMCFM_highestPTJets_temp = pvbs_temp;
+              
+              }
+            }
+          
+          }
+
+          for (unsigned int disableJet=0; disableJet<nGoodJets; disableJet++) melaCand->getAssociatedJet(disableJet)->setSelected(true); // Turn everything back on
+
+          if (jecnum == 0){
+            phjj_VAJHU_highestPTJets = phjj_VAJHU_highestPTJets_temp;
+            pvbf_VAJHU_highestPTJets = pvbf_VAJHU_highestPTJets_temp;
+            pzzjj_VAMCFM_highestPTJets = pzzjj_VAMCFM_highestPTJets_temp;
+            pvbs_VAMCFM_highestPTJets = pvbs_VAMCFM_highestPTJets_temp;
+          }
+          else if (jecnum == 1){
+            phjj_VAJHU_highestPTJets_up = phjj_VAJHU_highestPTJets_temp;
+            pvbf_VAJHU_highestPTJets_up = pvbf_VAJHU_highestPTJets_temp;
+            pzzjj_VAMCFM_highestPTJets_up = pzzjj_VAMCFM_highestPTJets_temp;
+            pvbs_VAMCFM_highestPTJets_up = pvbs_VAMCFM_highestPTJets_temp;
+          }
+          else if (jecnum == 2){
+            phjj_VAJHU_highestPTJets_dn = phjj_VAJHU_highestPTJets_temp;
+            pvbf_VAJHU_highestPTJets_dn = pvbf_VAJHU_highestPTJets_temp;
+            pzzjj_VAMCFM_highestPTJets_dn = pzzjj_VAMCFM_highestPTJets_temp;
+            pvbs_VAMCFM_highestPTJets_dn = pvbs_VAMCFM_highestPTJets_temp;
+          }
+        } // if hasAtLeastOneJet
+        if (jecnum == 0){
+	  p0plus_VAJHU = p0plus_VAJHU_temp;
+	  p0plus_VAMCFM = p0plus_VAMCFM_temp;
+	  p2bplus_VAJHU = p2bplus_VAJHU_temp;
+	  pqqZJJ_VAMCFM = pqqZJJ_VAMCFM_temp;
+        }
+        else if (jecnum == 1){
+	  p0plus_VAJHU_up = p0plus_VAJHU_temp;
+	  p0plus_VAMCFM_up = p0plus_VAMCFM_temp;
+	  p2bplus_VAJHU_up = p2bplus_VAJHU_temp;
+	  pqqZJJ_VAMCFM_up = pqqZJJ_VAMCFM_temp;
+        }
+        else if (jecnum == 2){
+	  p0plus_VAJHU_dn = p0plus_VAJHU_temp;
+	  p0plus_VAMCFM_dn = p0plus_VAMCFM_temp;
+	  p2bplus_VAJHU_dn = p2bplus_VAJHU_temp;
+	  pqqZJJ_VAMCFM_dn = pqqZJJ_VAMCFM_temp; 
+        }
+
+      } // End if melaCand!=0
+    } // for jecnum = 0 to 2
+
+*/
+// End of aloke MELA adding 
+
+
 
     //----------------------------------------------------------------------
 
@@ -942,7 +1297,7 @@ void ZZjjCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSe
           //      if(dbg) cout << "kinematicFit vertex, ndof, chi2, prob: "
           //                   << allLeptonsVertex->position() << " , "
           //                   << allLeptonsVertex->degreesOfFreedom() << " , "
-
+          //                   << allLeptonsVertex->chiSquared()   << " , "
           //                   << TMath::Prob(allLeptonsVertex->chiSquared(),allLeptonsVertex->degreesOfFreedom()) << endl;
 
           //myCand->addUserData("ConstrainedCandVtx",constrainedVertex);
@@ -999,11 +1354,46 @@ void ZZjjCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     myCand.addUserFloat("DiJetDEta", DiJetDEta);
     myCand.addUserFloat("DiJetFisher", DiJetFisher);
     
-    myCand.addUserFloat("ZZjjPt", ZZjjPt);
+    myCand.addUserFloat("ZZjjPt", ZZjjPt );
 
   //  std::cout <<"running fully fine 4 "<<endl; //test aloke FIXME
     // MELA branches
-    pushMELABranches(myCand);
+    pushMELABranches(myCand); //FIXME
+  //Mela v2 added by aloke from 2l2q_80x
+/*
+    myCand.addUserFloat("p0plus_VAJHU", p0plus_VAJHU);
+    myCand.addUserFloat("p0minus_VAJHU", p0minus_VAJHU);
+    myCand.addUserFloat("p0hplus_VAJHU", p0hplus_VAJHU);
+    myCand.addUserFloat("p2bplus_VAJHU", p2bplus_VAJHU);
+    myCand.addUserFloat("p2_VAJHU", p2_VAJHU);
+    myCand.addUserFloat("phjj_VAJHU_highestPTJets", phjj_VAJHU_highestPTJets);
+    myCand.addUserFloat("pvbf_VAJHU_highestPTJets", pvbf_VAJHU_highestPTJets);
+    myCand.addUserFloat("phjj_VAJHU_highestPTJets_up", phjj_VAJHU_highestPTJets_up);
+    myCand.addUserFloat("pzzjj_VAMCFM_highestPTJets", pzzjj_VAMCFM_highestPTJets);
+    myCand.addUserFloat("pvbs_VAMCFM_highestPTJets", pvbs_VAMCFM_highestPTJets);
+    myCand.addUserFloat("pzzjj_VAMCFM_highestPTJets_up", pzzjj_VAMCFM_highestPTJets_up);
+    myCand.addUserFloat("p0plus_VAJHU_up", p0plus_VAJHU_up);
+    myCand.addUserFloat("p0plus_VAMCFM_up", p0plus_VAMCFM_up);
+    myCand.addUserFloat("p2bplus_VAJHU_up", p2bplus_VAJHU_up);
+    myCand.addUserFloat("pqqZJJ_VAMCFM_up", pqqZJJ_VAMCFM_up);
+    myCand.addUserFloat("pvbf_VAJHU_highestPTJets_up", pvbf_VAJHU_highestPTJets_up);
+    myCand.addUserFloat("phjj_VAJHU_highestPTJets_dn", phjj_VAJHU_highestPTJets_dn);
+    myCand.addUserFloat("pvbs_VAMCFM_highestPTJets_up", pvbs_VAMCFM_highestPTJets_up);
+    myCand.addUserFloat("pzzjj_VAMCFM_highestPTJets_dn", pzzjj_VAMCFM_highestPTJets_dn);
+    myCand.addUserFloat("p0plus_VAJHU_dn", p0plus_VAJHU_dn);
+    myCand.addUserFloat("p0plus_VAMCFM_dn", p0plus_VAMCFM_dn);
+    myCand.addUserFloat("p2bplus_VAJHU_dn", p2bplus_VAJHU_dn);
+    myCand.addUserFloat("pqqZJJ_VAMCFM_dn", pqqZJJ_VAMCFM_dn);
+    myCand.addUserFloat("pvbf_VAJHU_highestPTJets_dn", pvbf_VAJHU_highestPTJets_dn);
+    myCand.addUserFloat("pvbs_VAMCFM_highestPTJets_dn", pvbs_VAMCFM_highestPTJets_dn);
+
+    myCand.addUserFloat("pqqZJJ_VAMCFM", pqqZJJ_VAMCFM);
+    myCand.addUserFloat("bkg_VAMCFM", bkg_VAMCFM);
+    myCand.addUserFloat("p0plus_VAMCFM", p0plus_VAMCFM);
+    myCand.addUserFloat("ggzz_VAMCFM", ggzz_VAMCFM);
+    myCand.addUserFloat("ggzz_p0plus_VAMCFM", ggzz_p0plus_VAMCFM);
+    myCand.addUserFloat("Dgg10_VAMCFM", Dgg10_VAMCFM);
+*/
 
 
     //--- MC matching. To be revised, cf. MuFiller, EleFiller
@@ -1083,7 +1473,8 @@ ZZjjCandidateFiller::getPairMass(const reco::Candidate* lp, const reco::Candidat
 }
 
 void ZZjjCandidateFiller::buildMELA(){
-  mela = new Mela(SetupToSqrts(setup), superMelaMass, TVar::ERROR);
+  //mela = new Mela(SetupToSqrts(setup), superMelaMass, TVar::ERROR);
+  mela = new Mela(SetupToSqrts(setup), superMelaMass, TVar::SILENT);
   mela->setCandidateDecayMode(TVar::CandidateDecay_ZZ);
 
   for (unsigned int it=0; it<recoMElist.size(); it++){

@@ -1351,7 +1351,7 @@ for (unsigned int i = 0; i<genCleanedJet.size(); ++i){
   // }
    
   //Loop on the candidates
-  cout <<" No of candidates = "<<cands->size()<<endl;
+ // cout <<" No of candidates = "<<cands->size()<<endl;
   vector<Int_t> CRFLAG(cands->size());
   for( edm::View<pat::CompositeCandidate>::const_iterator cand = cands->begin(); cand != cands->end(); ++cand) {
     if (failed) break; //don't waste time on this
@@ -1462,7 +1462,7 @@ if(m_it_map_runnumber_vec_evtnumber != m_map_runnumber_vec_evtnumber.end()){
   // Now we can write the variables for candidates
   int nFilled=0;
 
-/* fatjet ommiter
+/*
 	for( edm::View<pat::CompositeCandidate>::const_iterator cand = candsFat->begin(); cand != candsFat->end(); ++cand) {
 	if (!( theChannel==ZL || (bool)(cand->userFloat("isBestCand")) )) continue; // Skip events other than the best cand (or CR candidates in the CR)
 	//if (!( theChannel==ZL || (bool)(cand->userFloat("isBestCand")) || double_event )) continue; // Skip events other than the best cand (or CR candidates in the CR)
@@ -1480,7 +1480,7 @@ if(m_it_map_runnumber_vec_evtnumber != m_map_runnumber_vec_evtnumber.end()){
    //    cout<<"aloke can select"<<endl;
     //if (failed || double_event ) break; //don't waste time on this
     if (failed ) break; //don't waste time on this
-    //   cout<<"aloke can select 22222222"<<endl;
+       //cout<<"aloke can select 22222222"<<endl;
     size_t icand= cand-cands->begin();
     if (!( theChannel==ZL || CRFLAG[icand] || (bool)(cand->userFloat("isBestCand")) )) continue; // Skip events other than the best cand (or CR candidates in the CR)
     //For the SR, also fold information about acceptance in CRflag.
@@ -1491,7 +1491,7 @@ if(m_it_map_runnumber_vec_evtnumber != m_map_runnumber_vec_evtnumber.end()){
     FillCandidate(*cand, evtPassTrigger&&evtPassSkim, event, CRFLAG[icand], false);
     // Fill the candidate as one entry in the tree. Do not reinitialize the event variables, as in CRs
     // there could be several candidates per event.
-   //    cout<<"one"<<endl;
+     //  cout<<"one"<<endl;
     myTree->FillCurrentTree(true);
     ++nFilled;
   }
@@ -3430,8 +3430,12 @@ void HZZ2l2qNtupleMaker::pushRecoMELABranches(const pat::CompositeCandidate& can
   // Pull + push...
   for (unsigned int ib=0; ib<recome_branches->size(); ib++){
     std::string branchname = recome_branches->at(ib)->bname.Data();
-    if (cand.hasUserFloat(branchname)) recome_branches->at(ib)->setValue((Float_t)cand.userFloat(branchname));
-    //else cerr << "HZZ2l2qNtupleMaker::pushRecoMELABranches: Candidate does not contain the reco ME " << branchname << " it should have calculated!" << endl;
+    //if (cand.hasUserFloat(branchname)) recome_branches->at(ib)->setValue((Float_t)cand.userFloat(branchname)); 
+    if (cand.hasUserFloat(branchname)) {
+         recome_branches->at(ib)->setValue((Float_t)cand.userFloat(branchname));
+        //cout<<"Mela values"<<cand.userFloat(branchname)<<endl;     
+         }
+     else cerr << "HZZ2l2qNtupleMaker::pushRecoMELABranches: Candidate does not contain the reco ME " << branchname << " it should have calculated!" << endl;
   }
 }
 void HZZ2l2qNtupleMaker::pushLHEMELABranches(){
